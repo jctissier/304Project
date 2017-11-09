@@ -3,7 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import extract
 from app.util.util import gzipped
 import collections
-from dateutil.parser import parse
 from datetime import datetime, timedelta
 from flask import Blueprint, request, render_template, make_response, jsonify
 from app.db.database import ZeiDB, db
