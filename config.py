@@ -9,9 +9,12 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 # Connect to the database
 
 # MAC
-# SQLALCHEMY_DATABASE_URI = 'sqlite://///' + os.path.join(basedir, 'Zei.sqlite3')
+# SQLALCHEMY_DATABASE_URI = 'sqlite://///' + os.path.join(basedir, 'testFootball.sqlite3')
 
 # WINDOWS
-SQLALCHEMY_DATABASE_URI = 'sqlite:///C:\\Users\\edwar\\Documents\\cpsc304\\304Project\\Zei.sqlite3'
+SQLALCHEMY_DATABASE_URI = 'sqlite:///C:\\Users\\edwar\\Documents\\cpsc304\\304Project\\testFootball.sqlite3'
+
+# TestDB
+
 
 SQLALCHEMY_TRACK_MODIFICATIONS = False

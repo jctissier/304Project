@@ -5,20 +5,21 @@ from app.util.util import gzipped
 import collections
 from datetime import datetime, timedelta
 from flask import Blueprint, request, render_template, make_response, jsonify
-from app.db.database import ZeiDB, db
+from app.db.database import Athlete, Coach, Competition, Game, Season, Stadium, Stats, Team, db
+from sqlalchemy import text
 
 
 # Define the blueprint: 'queries'
 queries = Blueprint('queries', __name__)
 
 
-@queries.route('/get_entries', methods=['GET', 'POST'])         # Example
+@queries.route('/get_athlete_entries', methods=['GET', 'POST'])         # Example
 @gzipped
 def load_pie():
-    data = ZeiDB.query.all()
+    data = Athlete.query.all()
 
     # Number of entries (unique)
-    entries = db.session.query(ZeiDB).count()
+    entries = db.session.query(Athlete).count()
 
     json_data = collections.OrderedDict({})
     for i in data:
@@ -26,14 +27,19 @@ def load_pie():
             i.id:
                 [{
                      'id': i.id,
-                     'zei_id': i.zei_id,
-                     'activity_id': i.activity_id,
-                     'start': i.start_time,
-                     'end': i.end_time,
-                     'project': i.project,
-                     'duration': i.duration,
-                     'notes': i.notes
+                     'salary': i.salary,
+                     'name': i.name,
+                     'dob': i.dob,
+                     'status': i.status,
+                     'placeOfBirth': i.placeOfBirth,
+                     'countryID': i.countryID
                 }]
             })
 
     return jsonify({'entries': json_data})
+
+@queries.route('/set_testDB', methods=['GET', 'POST']) #set data in test db
+@gzipped
+def set_testDB():
+    sql = text('''UPDATE ZeiTracking SET project = "TEST" WHERE project = "TB Database"''')
+    result = db.engine.execute(sql)
