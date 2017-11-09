@@ -28,10 +28,10 @@ class Athlete(db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
     salary = db.Column('salary', db.Integer)
     name = db.Column('name', db.String(100))
-    dob = db.Column('dob', db.DateTime)
+    dob = db.Column('dob', db.Date)
     status = db.Column('status', db.String(100))
-    placeOfBirth = db.Column('placeOfBirth', db.Integer)
-    countryID = db.Column('countryID', db.Integer)
+    placeOfBirth = db.Column('placeOfBirth', db.String(100))
+    countryID = db.Column('countryID', db.String(100))
 
     def __init__(self, id, salary, name, dob, status, placeOfBirth, countryID):
         self.id = id
@@ -49,10 +49,10 @@ class Coach(db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
     salary = db.Column('salary', db.Integer)
     name = db.Column('name', db.String(100))
-    dob = db.Column('dob', db.DateTime)
+    dob = db.Column('dob', db.Date)
     status = db.Column('status', db.String(100))
-    placeOfBirth = db.Column('placeOfBirth', db.Integer)
-    countryID = db.Column('countryID', db.Integer)
+    placeOfBirth = db.Column('placeOfBirth', db.String(100))
+    countryID = db.Column('countryID', db.String(100))
 
     def __init__(self, id, salary, name, dob, status, placeOfBirth, countryID):
         self.id = id
@@ -135,7 +135,7 @@ class Team(db.Model):
     name = db.Column('name', db.String(100))
     teamID = db.Column('teamID', db.Integer, primary_key=True)
     location = db.Column('location', db.String(100))
-    dateCreated = db.Column('dateCreated', db.DateTime)
+    dateCreated = db.Column('dateCreated', db.Date)
 
     def __init__(self, name, teamID, location, dateCreated):
         self.name = name
