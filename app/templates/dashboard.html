@@ -22,9 +22,6 @@
     <link href="{{ url_for('static', filename='assets/css/bootstrap-datepicker.css')}}" rel="stylesheet" />
 
     <style type="text/css">
-        .desktop-hidden {
-            margin-top: 0px!important;
-        }
 
         @media (max-width: 992px) {
             .mobile-friendly {
@@ -68,38 +65,91 @@
           fill: #fff;
         }
 
-        #chart {
-          position: relative;
+        .card-header {
+            padding: 15px!important;
         }
 
-        #chart path {
-          stroke: #fff;
+        .divider {
+          height: 1px;
+          width:100%;
+          display:block; /* for use on default inline elements like span */
+          margin: 9px 0;
+          overflow: hidden;
+          background-color: #e5e5e5;
+        }
+        /*
+        Darcula color scheme from the JetBrains family of IDEs
+        */
+
+        .hljs {
+          display: block;
+          overflow-x: auto;
+          padding: 0.5em;
+          background: #2b2b2b;
         }
 
-        #explanation {
-          position: absolute;
-          top: 210px;
-          left: 180px;
-          width: 140px;
-          text-align: center;
-          color: #666;
+        .hljs {
+          color: #bababa;
         }
 
-        #total_hours {
-          position: absolute;
-          top: 210px;
-          left: 180px;
-          width: 140px;
-          text-align: center;
-          color: #666;
+        .hljs-strong,
+        .hljs-emphasis {
+          color: #a8a8a2;
         }
 
-        #percentage {
-          font-size: 2.5em;
+        .hljs-bullet,
+        .hljs-quote,
+        .hljs-link,
+        .hljs-number,
+        .hljs-regexp,
+        .hljs-literal {
+          color: #6896ba;
         }
 
-        #hours_title {
-          font-size: 2.5em;
+        .hljs-code,
+        .hljs-selector-class {
+          color: #a6e22e;
+        }
+
+        .hljs-emphasis {
+          font-style: italic;
+        }
+
+        .hljs-keyword,
+        .hljs-selector-tag,
+        .hljs-section,
+        .hljs-attribute,
+        .hljs-name,
+        .hljs-variable {
+          color: #cb7832;
+        }
+
+        .hljs-params {
+          color: #b9b9b9;
+        }
+
+        .hljs-string {
+          color: #6a8759;
+        }
+
+        .hljs-subst,
+        .hljs-type,
+        .hljs-built_in,
+        .hljs-builtin-name,
+        .hljs-symbol,
+        .hljs-selector-id,
+        .hljs-selector-attr,
+        .hljs-selector-pseudo,
+        .hljs-template-tag,
+        .hljs-template-variable,
+        .hljs-addition {
+          color: #e0c46c;
+        }
+
+        .hljs-comment,
+        .hljs-deletion,
+        .hljs-meta {
+          color: #7f7f7f;
         }
 
     </style>
@@ -107,219 +157,155 @@
 
 <body>
 
-    <div class="main-panel" style="width: 100%;overflow-x: hidden;">
-
-        <div class="content desktop-hidden mobile-padding" style="padding-top: 0px;">
+    <div class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-lg-3 col-md-6 col-sm-6">
-                        <div class="card card-stats" style="margin-bottom:15px;">
-                            <div class="card-header" data-background-color="red">
-                                <i class="material-icons">hourglass_full</i>
+                    <div class="col-md-10 col-md-offset-1">
+                        <div class="card" style="box-shadow: none;">
+                            <div class="card-header" data-background-color="green" style="padding: 15px;text-align: center;">
+                                <h4 class="title">CPSC 304 Project</h4>
+                                <p class="category">Edward, Gary, Isaac, Jean-Claude</p>
                             </div>
-                            <div class="card-content" style="padding-bottom:0px;">
-                                <p class="category">Hours Left</p>
-                                <h3 class="title" id="hours_left"></h3>
-                            </div>
-                            <div class="card-footer">
-                                <div class="stats">
-                                    <i class="material-icons">alarm</i> Of 755 Hours
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                            <div class="card-content" style="padding-top:30px;">
 
-                    <div class="col-lg-3 col-md-6 col-sm-6">
-                        <div class="card card-stats" style="margin-bottom:15px;">
-                            <div class="card-header" data-background-color="green">
-                                <i class="material-icons">storage</i>
-                            </div>
-                            <div class="card-content" style="padding-bottom:0px;">
-                                <p class="category">Databases</p>
-                                <h3 class="title">5</h3>
-                            </div>
-                            <div class="card-footer">
-                                <div class="stats">
-                                    TB, HIV, CD, IM & Paris Integration
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="col-lg-3 col-md-6 col-sm-6">
-                        <div class="card card-stats" style="margin-bottom:15px;">
-                            <div class="card-header" data-background-color="orange">
-                                <i class="material-icons">timer</i>
-                            </div>
-                            <div class="card-content" style="padding-bottom:0px;">
-                                <p class="category">Time Entries</p>
-                                <h3 class="title" id="time_entries"></h3>
-                            </div>
-                            <div class="card-footer">
-                                <div class="stats">
-                                    <i class="material-icons">event_available</i> Since June 9th, 2017
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-3 col-md-6 col-sm-6">
-                        <div class="card card-stats" style="margin-bottom:15px;">
-                            <div class="card-header" data-background-color="blue">
-                                <i class="material-icons">timeline</i>
-                            </div>
-                            <div class="card-content" style="padding-bottom:0px;">
-                                <p class="category">Days Tracked</p>
-                                <h3 class="title" id="days_tracked"></h3>
-                            </div>
-                            <div class="card-footer">
-                                <div class="stats">
-                                    <i class="material-icons">event_available</i> Since June 9th, 2017
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Include Chart -->
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card" style="margin-top: 0px;">
-
-                            <div id="pieChart" style="text-align: center;"></div>
-
-                            <!-- Insert Sunburst Here -->
-                            <div class="row" style="padding-top:10px;">
-                                <div class="col-md-3"></div>
-                                <div class="col-md-6">
-                                    <div id="main">
-                                        <div id="sequence"></div>
-                                        <div id="chart">
-                                          <div id="total_hours" style="font-size: smaller;line-height: 1.5;color: red;">
-                                            <br/><br/>
-                                            <span id="hours_title"></span>
-                                          </div>
-
-                                          <div id="explanation" style="visibility: hidden;">
-                                            <span id="percentage"></span><br/>
-                                            <span id="project"></span><br/><br/>
-                                            <span id="hours_worked" style="font-weight: bold;color: red;font-size:14px;"></span>
-                                          </div>
-                                        </div>
-                                    </div>
-                                    <div id="sidebar">
-                                        <input type="checkbox" id="togglelegend"> Show Legend<br/>
-                                        <div id="legend" style="visibility: hidden;"></div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3"></div>
-
-                            </div>
-
-                            <!-- End of Sunburst -->
-
-                            <div class="card-content" style="padding-top:0px;">
-                                <h4 class="title">Total Hours worked: <strong id="hours_worked_bold" style="color: #ef5350;"></strong></h4>
-                                <p class="category"><span class="text-success" id="hours_this_month"><i class="fa fa-long-arrow-up"></i></span> &nbsp;tracked this month.</p>
-                                <form action="/download_full_report" method="get" style="display: inline;">
-                                    <button class="btn btn-success" style="margin-right: 15px;" onclick="demo.showNotification('top','right', 'Your Report will download shortly.', 'success')"><i class="material-icons">cloud_download</i> Download  Full Report</button>
-                                </form>
-                                OR
-                                <button class="btn btn-success mobile-friendly" id="show_date_range_btn" onclick="show_datefields()" style="margin-left: 15px;"><i class="material-icons">cloud_download</i> Download Customized Report </button>
-
-                                <div class="row" id="customized_report_dates" style="display: none;">
-                                    <form action="/download_customized_report" method="post" style="display: inline;" id="custom_form">
-                                        <div class="col-sm-6 col-md-3">
-                                            <div class="input-group">
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                                <input type="text" name="fromDate" class="datepicker form-control" placeholder="From Date" id="fromDate">
+                                <div class="card card-nav-tabs">
+                                    <div class="card-header" data-background-color="orange" style="text-align:center;">
+                                        <div class="nav-tabs-navigation">
+                                            <div class="nav-tabs-wrapper">
+                                                <ul class="nav nav-tabs" data-tabs="tabs" style="display: inline-block;">
+                                                    <li class="active">
+                                                        <a href="#select_tab" data-toggle="tab" style="text-align: center;">
+                                                            <i class="material-icons">format_line_spacing</i><br/>
+                                                            SELECT
+                                                        <div class="ripple-container"></div></a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#insert_tab" data-toggle="tab" style="text-align: center;">
+                                                            <i class="material-icons">add</i><br>
+                                                            INSERT
+                                                        <div class="ripple-container"></div></a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#delete_tab" data-toggle="tab" style="text-align: center;">
+                                                            <i class="material-icons">delete</i><br/>
+                                                            DELETE
+                                                        <div class="ripple-container"></div></a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#update_tab" data-toggle="tab" style="text-align: center;">
+                                                            <i class="material-icons">publish</i><br/>
+                                                            UPDATE
+                                                        <div class="ripple-container"></div></a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#join_tab" data-toggle="tab" style="text-align: center;">
+                                                            <i class="material-icons">link</i><br/>
+                                                            &nbsp;&nbsp;JOINS&nbsp;&nbsp;
+                                                        <div class="ripple-container"></div></a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#groupby_tab" data-toggle="tab" style="text-align: center;">
+                                                            <i class="material-icons">list</i><br/>
+                                                            GROUP BY
+                                                        <div class="ripple-container"></div></a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#createview_tab" data-toggle="tab" style="text-align: center;">
+                                                            <i class="material-icons">view_list</i><br/>
+                                                            CREATE VIEW
+                                                        <div class="ripple-container"></div></a>
+                                                    </li>
+                                                </ul>
                                             </div>
                                         </div>
-                                        <div class="col-sm-6 col-md-3">
-                                            <div class="input-group">
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                                <input type="text" name="toDate" class="datepicker form-control" placeholder="To Date" id="toDate">
+                                    </div>
+
+                                    <div class="card-content">
+                                        <div class="tab-content">
+
+                                            <!-- SELECT QUERIES -->
+                                            <div class="tab-pane active" id="select_tab">
+
+                                                <div class="modal fade" id="select-modal" tabindex="-1" role="dialog" aria-labelledby="select-modal-label" aria-hidden="true">
+                                                    <div class="modal-dialog" style="margin-top:30px;">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header" style="padding: 15px 15px 5px 15px;">
+                                                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                                                                <h5 class="modal-title" id="streamLabel_id">JSON Response</h5>
+                                                            </div>
+                                                            <div class="modal-body" id="select-response" style="padding: 10px;">
+                                                                <pre style="padding-top:15px;"><code class="json hljs" id="select-response-json" style="background-color: #f5f5f5!important;color: black"></code></pre>
+                                                            </div>
+                                                            <div class="modal-footer" style="margin-top:0px;padding: 3px;">
+                                                                <button type="button" class="btn btn-md" data-dismiss="modal" style="width: 100%;background-color:#22aba6;">
+                                                                    <i class="icon-close"></i> Close
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4"></div>
+                                                <div class="col-md-4" style="text-align: center;">
+                                                    <div class="dropdown">
+                                                        <a href="#" class="btn btn-md btn-warning dropdown-toggle" data-toggle="dropdown">
+                                                            Select Query Options
+                                                            <b class="caret"></b>
+                                                        </a>
+                                                        <ul class="dropdown-menu" style="left:50%;right:auto;transform:translate(-50%,0);">
+                                                            <li><a onclick="select_queries('Athlete')">Athlete Table</a></li>
+                                                            <li><a onclick="select_queries('Team')">Team Table</a></li>
+                                                            <li><a onclick="select_queries('Coach')">Coach Table</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4"></div>
+
+                                                <div class="divider"></div>
+
+                                                <div id="select-content" style="display: none;">
+                                                    <pre style="padding-top:15px;background: #2b2b2b;" id="select_query_athlete"><code class="sql hljs">SELECT aId, aName, countryID, dob, placeOfBirth, salary, aStatus, goals, assists, wins, losses FROM Athlete;</code></pre>
+                                                    <pre style="padding-top:15px;background: #2b2b2b;" id="select_query_team"><code class="sql hljs">SELECT teamID, aName, location, dateCreated, goals, assists, wins, losses FROM Team;</code></pre>
+                                                    <pre style="padding-top:15px;background: #2b2b2b;" id="select_query_coach"><code class="sql hljs">SELECT cId, aName, salary, dob, astatus, placeOfBirth, countryID FROM Coach;</code></pre>
+                                                    <div class="row" style="text-align: center;" id="select-json-btn">
+                                                        <button class="btn btn-success btn-sm" style="margin-bottom:20px;padding-top:8px;background-color: #22aba6;" data-toggle="modal" data-target="#select-modal">Show JSON Query Response</button>
+                                                    </div>
+
+                                                    <div class="card-content table-responsive table-full-width" style="padding: 30px;">
+                                                        <table class="table" id="select_table_insertion"></table>
+                                                    </div>
+                                                </div>
                                             </div>
+
+                                            <!-- INSERT QUERIES -->
+                                            <div class="tab-pane" id="insert_tab">
+                                                Second Tab
+                                            </div>
+
+                                            <div class="tab-pane" id="delete_tab">
+                                                Third Tab
+                                            </div>
+
+                                            <div class="tab-pane" id="update_tab">
+                                                Fourth Tab
+                                            </div>
+
+                                            <div class="tab-pane" id="join_tab">
+                                                Fifth Tab
+                                            </div>
+
+                                            <div class="tab-pane" id="groupby_tab">
+                                                Sixth Tab
+                                            </div>
+
+                                            <div class="tab-pane" id="createview_tab">
+                                                Seventh Tab
+                                            </div>
+
                                         </div>
-                                        <div class="col-sm-6 col-md-4">
-                                            <button class="btn btn-success mobile-friendly" style="margin-left: 15px;"><i class="material-icons">cloud_download</i> Download Customized Report </button>
-                                        </div>
-                                    </form>
+                                    </div>
+
                                 </div>
-
-                            </div>
-                            <div class="card-footer">
-                                <div class="stats">
-                                    <i class="material-icons">access_time</i> Updated in the last 24 Hours
-                                    <button class="btn btn-info btn-xs" onclick="refresh_data(false)"><i class="fa fa-refresh"></i> Refresh </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-header card-chart" data-background-color="green">
-                                <div class="ct-chart" id="completedTasksChart"></div>
-                            </div>
-                            <div class="card-content">
-                                <h4 class="title">Daily Tracking Averages</h4>
-                                <p class="category text-success" id="daily_tracking" style="display: inline;"></p><p style="display: inline;"> of hours tracked during </p><span class="text-success" id="daily_max"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-header card-chart" data-background-color="orange">
-                                <div class="ct-chart" id="dailySalesChart"></div>
-                            </div>
-                            <div class="card-content">
-                                <h4 class="title">Weekly Tracking Averages</h4>
-                                <p class="category" style="display: inline;">Most entries recorded on </p><span class="text-success" id="weekly_max"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-header card-chart" data-background-color="red">
-                                <div class="ct-chart" id="emailsSubscriptionChart"></div>
-                            </div>
-                            <div class="card-content">
-                                <h4 class="title">Monthly Tracking Averages</h4>
-                                <p class="category" style="display: inline;">Most entries recorded in </p> <span class="text-success" id="monthly_max"></span><span class="text-danger" id="monthly_hours"></span>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-
-                    <div class="col-lg-12 col-md-12">
-                        <div class="card">
-                            <div class="card-header" data-background-color="orange">
-                                <h4 class="title" style="padding:5px;"><i class="material-icons">date_range</i> Recent Entries</h4>
-                                <p class="category" style="padding-bottom: 10px;padding-left:10px;">Hours tracked in the last 5 days</p>
-                            </div>
-                            <div class="card-content table-responsive">
-                                <table class="table table-hover">
-                                    <thead class="text-warning">
-                                        <th>Project</th>
-                                        <th>Start Time</th>
-                                        <th>End Time</th>
-                                        <th>Duration</th>
-                                        <th>Notes</th>
-                                    </thead>
-                                    <tbody id="last_5_days_entries"></tbody>
-                                </table>
                             </div>
                         </div>
                     </div>
@@ -327,10 +313,12 @@
             </div>
         </div>
 
+    <div class="main-panel" style="width: 100%;overflow-x: hidden;">
+
         <footer class="footer">
             <div class="container-fluid">
                 <p class="copyright pull-right">
-                    &copy; <script>document.write(new Date().getFullYear())</script> Built by <a href="https://github.com/jctissier">Jean-Claude Tissier</a>
+                    &copy; <script>document.write(new Date().getFullYear())</script> Built for <a href="https://github.com/jctissier/304Project">CPSC 304 Project</a>
                 </p>
             </div>
         </footer>
@@ -339,18 +327,15 @@
 </body>
 
 	<!--   Core JS Files   -->
-{#	<script src="{{ url_for('static', filename='assets/js/jquery-3.1.0.min.js')}}" type="text/javascript"></script>#}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.9.1/d3.js" charset="utf-8"></script>
 
-{#    <script src="{{ url_for('static', filename='assets/js/chartist.min.js')}}"></script>#}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
 
 	<script src="{{ url_for('static', filename='assets/js/bootstrap.min.js')}}" type="text/javascript"></script>
 	<script src="{{ url_for('static', filename='assets/js/material.min.js')}}" type="text/javascript"></script>
-
-	<!--  Charts Plugin -->
-	<script src="{{ url_for('static', filename='assets/js/chartist.min.js')}}"></script>
 
 	<!--  Notifications Plugin    -->
 	<script src="{{ url_for('static', filename='assets/js/bootstrap-notify.js')}}"></script>
@@ -358,825 +343,7 @@
 	<!-- Material Dashboard javascript methods -->
 	<script src="{{ url_for('static', filename='assets/js/material-dashboard.js')}}"> </script>
 
-    <script src="{{ url_for('static', filename='assets/js/bootstrap-datepicker.js')}}"></script>
-
-{#    <script type="text/javascript">#}
-{#        /**#}
-{#         * Check for any new entries on page load#}
-{#         */#}
-{#        $(document).ready(function() {#}
-{#            refresh_data(true);#}
-{#        });#}
-{#    </script>#}
-
-{#    <script type="text/javascript">#}
-{#        /**#}
-{#         *  D3js javascript functions to create visualization Sunburst Sequence#}
-{#         */#}
-{#        $(document).ready(function() {#}
-{#            if (screen.width >= 768 ) {#}
-{#                $.ajax({#}
-{#                    type: 'GET',#}
-{#                    url: '/load_sunburst'#}
-{#                })#}
-{#                        .done(function (response) {#}
-{#                            // Dimensions of sunburst.#}
-{#                            var width = 500;#}
-{#                            var height = 500;#}
-{#                            var radius = Math.min(width, height) / 2;#}
-{##}
-{#                            // Breadcrumb dimensions: width, height, spacing, width of tip/tail.#}
-{#                            //increase w if you want to make the arrow longer#}
-{#                            var b = {#}
-{#                                w: 100, h: 30, s: 3, t: 10#}
-{#                            };#}
-{##}
-{#                            // make `colors` an ordinal scale#}
-{#                            var colors = d3.scale.category20();#}
-{##}
-{#                            // Total size of all segments; we set this later, after loading the data.#}
-{#                            var totalSize = 0;#}
-{##}
-{#                            var vis = d3.select("#chart").append("svg:svg")#}
-{#                                    .attr("width", width)#}
-{#                                    .attr("height", height)#}
-{#                                    .append("svg:g")#}
-{#                                    .attr("id", "container")#}
-{#                                    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");#}
-{##}
-{##}
-{#                            var partition = d3.layout.partition()#}
-{#                                    .size([2 * Math.PI, radius * radius])#}
-{#                                    .value(function (d) {#}
-{#                                        return d.size;#}
-{#                                    });#}
-{##}
-{##}
-{#                            var arc = d3.svg.arc()#}
-{#                                    .startAngle(function (d) {#}
-{#                                        return d.x;#}
-{#                                    })#}
-{#                                    .endAngle(function (d) {#}
-{#                                        return d.x + d.dx;#}
-{#                                    })#}
-{#                                    .innerRadius(function (d) {#}
-{#                                        return Math.sqrt(d.y);#}
-{#                                    })#}
-{#                                    .outerRadius(function (d) {#}
-{#                                        return Math.sqrt(d.y + d.dy);#}
-{#                                    });#}
-{##}
-{#                            // JSON generated by Python#}
-{#                            var json = JSON.parse(response);#}
-{#                            d3.select('#hours_title').text(json['hours']);#}
-{#                            createVisualization(json);#}
-{##}
-{#                            // Main function to draw and set up the visualization, once we have the data.#}
-{#                            function createVisualization(json) {#}
-{##}
-{#                                // Basic setup of page elements.#}
-{#                                initializeBreadcrumbTrail();#}
-{##}
-{#                                // Bounding circle underneath the sunburst, to make it easier to detect#}
-{#                                // when the mouse leaves the parent g.#}
-{#                                vis.append("svg:circle")#}
-{#                                        .attr("r", radius)#}
-{#                                        .style("opacity", 0);#}
-{##}
-{#                                // For efficiency, filter nodes to keep only those large enough to see.#}
-{#                                var nodes = partition.nodes(json)#}
-{#                                        .filter(function (d) {#}
-{#                                            return (d.dx > 0.005); // 0.005 radians = 0.29 degrees#}
-{#                                        });#}
-{##}
-{#                                var uniqueNames = (function (a) {#}
-{#                                    var output = [];#}
-{#                                    a.forEach(function (d) {#}
-{#                                        if (output.indexOf(d.name) === -1 && d.name != "root") {#}
-{#                                            output.push(d.name);#}
-{#                                        }#}
-{#                                    });#}
-{#                                    return output;#}
-{#                                })(nodes);#}
-{##}
-{#                                // set domain of colors scale based on shuffled data#}
-{#                                colors.domain(uniqueNames);#}
-{#                                colors.domain(shuffle(uniqueNames));#}
-{##}
-{##}
-{#                                // make sure this is done after setting the domain#}
-{#                                drawLegend();#}
-{#                                d3.select("#togglelegend").on("click", toggleLegend);#}
-{##}
-{#                                var path = vis.data([json]).selectAll("path")#}
-{#                                        .data(nodes)#}
-{#                                        .enter().append("svg:path")#}
-{#                                        .attr("display", function (d) {#}
-{#                                            return d.depth ? null : "none";#}
-{#                                        })#}
-{#                                        .attr("d", arc)#}
-{#                                        .attr("fill-rule", "evenodd")#}
-{#                                        .style("fill", function (d) {#}
-{#                                            return colors(d.name);#}
-{#                                        })#}
-{#                                        .style("opacity", 1)#}
-{#                                        .on("mouseover", mouseover);#}
-{##}
-{#                                // Add the mouseleave handler to the bounding circle.#}
-{#                                d3.select("#container").on("mouseleave", mouseleave);#}
-{##}
-{#                                // Get total size of the tree = value of root node from partition.#}
-{#                                totalSize = path.node().__data__.value;#}
-{#                            };#}
-{##}
-{#                            // Shuffle the array of names to assign random colors#}
-{#                            function shuffle(array) {#}
-{#                                var currentIndex = array.length, temporaryValue, randomIndex;#}
-{##}
-{#                                // While there remain elements to shuffle...#}
-{#                                while (0 !== currentIndex) {#}
-{##}
-{#                                    // Pick a remaining element...#}
-{#                                    randomIndex = Math.floor(Math.random() * currentIndex);#}
-{#                                    currentIndex -= 1;#}
-{##}
-{#                                    // And swap it with the current element.#}
-{#                                    temporaryValue = array[currentIndex];#}
-{#                                    array[currentIndex] = array[randomIndex];#}
-{#                                    array[randomIndex] = temporaryValue;#}
-{#                                }#}
-{##}
-{#                                return array;#}
-{#                            }#}
-{##}
-{#                            // Fade all but the current sequence, and show it in the breadcrumb trail.#}
-{#                            function mouseover(d) {#}
-{#                                // Hide the total hours worked#}
-{#                                d3.select('#total_hours').style("visibility", "hidden");#}
-{##}
-{#                                var percentage = (100 * d.value / totalSize).toPrecision(3);#}
-{#                                var percentageString = percentage + "%";#}
-{#                                if (percentage < 0.1) {#}
-{#                                    percentageString = "< 0.1%";#}
-{#                                }#}
-{##}
-{#                                // Extracting Main Project and Sub Project names#}
-{#                                var breadcrumb = getAncestors(d);#}
-{#                                var mainProject = breadcrumb[0].name;#}
-{#                                var subProject = breadcrumb[breadcrumb.length - 1].name;#}
-{##}
-{#                                // Updating percentage at each mouseover#}
-{#                                d3.select("#percentage")#}
-{#                                        .text(percentageString);#}
-{##}
-{#                                if (mainProject != subProject) {#}
-{#                                    // Updating the text for main project/sub-project text#}
-{#                                    d3.select("#project").text(" is spent on " + subProject + " for " + mainProject);#}
-{#                                }#}
-{#                                else {#}
-{#                                    // Text for main Project#}
-{#                                    d3.select("#project").text(" of my hours are spent on " + mainProject);#}
-{#                                }#}
-{##}
-{#                                d3.select("#hours_worked").text(d.hours);#}
-{##}
-{#                                d3.select("#explanation")#}
-{#                                        .style("visibility", "");#}
-{##}
-{#                                var sequenceArray = getAncestors(d);#}
-{#                                updateBreadcrumbs(sequenceArray, percentageString);#}
-{##}
-{#                                // Fade all the segments.#}
-{#                                d3.selectAll("path")#}
-{#                                        .style("opacity", 0.3);#}
-{##}
-{#                                // Then highlight only those that are an ancestor of the current segment.#}
-{#                                vis.selectAll("path")#}
-{#                                        .filter(function (node) {#}
-{#                                            return (sequenceArray.indexOf(node) >= 0);#}
-{#                                        })#}
-{#                                        .style("opacity", 1);#}
-{#                            }#}
-{##}
-{#                            // Restore everything to full opacity when moving off the visualization.#}
-{#                            function mouseleave(d) {#}
-{##}
-{#                                // Hide the breadcrumb trail#}
-{#                                d3.select("#trail")#}
-{#                                        .style("visibility", "hidden");#}
-{##}
-{#                                // Deactivate all segments during transition.#}
-{#                                d3.selectAll("path").on("mouseover", null);#}
-{##}
-{#                                // Transition each segment to full opacity and then reactivate it.#}
-{#                                // Made the transition half a second#}
-{#                                d3.selectAll("path")#}
-{#                                        .transition()#}
-{#                                        .duration(500)#}
-{#                                        .style("opacity", 1)#}
-{#                                        .on("end", function () {#}
-{#                                            d3.select(this).on("mouseover", mouseover);#}
-{#                                        });#}
-{##}
-{#                                d3.select("#explanation")#}
-{#                                        .transition()#}
-{#                                        .duration(500)#}
-{#                                        .style("visibility", "hidden");#}
-{##}
-{#                                // Show the total hours worked#}
-{#                                d3.select('#total_hours').style("visibility", "");#}
-{#                            }#}
-{##}
-{#                            // Given a node in a partition layout, return an array of all of its ancestor#}
-{#                            // nodes, highest first, but excluding the root.#}
-{#                            function getAncestors(node) {#}
-{#                                var path = [];#}
-{#                                var current = node;#}
-{#                                while (current.parent) {#}
-{#                                    path.unshift(current);#}
-{#                                    current = current.parent;#}
-{#                                }#}
-{#                                return path;#}
-{#                            }#}
-{##}
-{#                            function initializeBreadcrumbTrail() {#}
-{#                                // Add the svg area.#}
-{#                                var trail = d3.select("#sequence").append("svg:svg")#}
-{#                                        .attr("width", width)#}
-{#                                        .attr("height", 35)#}
-{#                                        .attr("id", "trail");#}
-{#                                // Add the label at the end, for the percentage.#}
-{#                                trail.append("svg:text")#}
-{#                                        .attr("id", "endlabel")#}
-{#                                        .style("fill", "#000");#}
-{#                            }#}
-{##}
-{#                            // Generate a string that describes the points of a breadcrumb polygon.#}
-{#                            function breadcrumbPoints(d, i) {#}
-{#                                var points = [];#}
-{#                                points.push("0,0");#}
-{#                                points.push(b.w + ",0");#}
-{#                                points.push(b.w + b.t + "," + (b.h / 2));#}
-{#                                points.push(b.w + "," + b.h);#}
-{#                                points.push("0," + b.h);#}
-{#                                if (i > 0) { // Leftmost breadcrumb; don't include 6th vertex.#}
-{#                                    points.push(b.t + "," + (b.h / 2));#}
-{#                                }#}
-{#                                return points.join(" ");#}
-{#                            }#}
-{##}
-{#                            // Update the breadcrumb trail to show the current sequence and percentage.#}
-{#                            function updateBreadcrumbs(nodeArray, percentageString) {#}
-{##}
-{#                                var trail = d3.select("#trail")#}
-{#                                        .selectAll("g")#}
-{#                                        .data(nodeArray, function (d) {#}
-{#                                            return d.name + d.depth;#}
-{#                                        });#}
-{##}
-{#                                // Remove exiting nodes.#}
-{#                                trail.exit().remove();#}
-{##}
-{#                                // Add breadcrumb and label for entering nodes.#}
-{#                                var entering = trail.enter().append("svg:g");#}
-{##}
-{#                                entering.append("svg:polygon")#}
-{#                                        .attr("points", breadcrumbPoints)#}
-{#                                        .style("fill", function (d) {#}
-{#                                            return colors(d.name);#}
-{#                                        });#}
-{##}
-{#                                entering.append("svg:text")#}
-{#                                        .attr("x", (b.w + b.t) / 2)#}
-{#                                        .attr("y", b.h / 2)#}
-{#                                        .attr("dy", "0.35em")#}
-{#                                        .attr("text-anchor", "middle")#}
-{#                                        .text(function (d) {#}
-{#                                            return d.name;#}
-{#                                        });#}
-{##}
-{#                                // Merge enter and update selections; set position for all nodes.#}
-{#                                entering.merge(trail).attr("transform", function (d, i) {#}
-{#                                    return "translate(" + i * (b.w + b.s) + ", 0)";#}
-{#                                });#}
-{##}
-{#                                // Now move and update the percentage at the end.#}
-{#                                d3.select("#trail").select("#endlabel")#}
-{#                                        .attr("x", (nodeArray.length + 0.5) * (b.w + b.s))#}
-{#                                        .attr("y", b.h / 2)#}
-{#                                        .attr("dy", "0.35em")#}
-{#                                        .attr("text-anchor", "middle")#}
-{#                                        .text(percentageString);#}
-{##}
-{#                                // Make the breadcrumb trail visible, if it's hidden.#}
-{#                                d3.select("#trail")#}
-{#                                        .style("visibility", "");#}
-{##}
-{#                            }#}
-{##}
-{#                            function drawLegend() {#}
-{##}
-{#                                // Dimensions of legend item: width, height, spacing, radius of rounded rect.#}
-{#                                var li = {#}
-{#                                    w: 240, h: 30, s: 3, r: 3#}
-{#                                };#}
-{##}
-{#                                var legend = d3.select("#legend").append("svg:svg")#}
-{#                                        .attr("width", li.w)#}
-{#                                        .attr("height", 530);#}
-{##}
-{#                                var g = legend.selectAll("g")#}
-{#                                        .data(colors.domain())#}
-{#                                        .enter().append("svg:g")#}
-{#                                        .attr("transform", function (d, i) {#}
-{#                                            // Build the legend into 2 columns#}
-{#                                            if (i * (li.h + li.s) > 500) {#}
-{#                                                return "translate(120," + (i - 16) * (li.h + li.s) + ")";#}
-{#                                            }#}
-{#                                            else {#}
-{#                                                return "translate(0," + i * (li.h + li.s) + ")";#}
-{#                                            }#}
-{#                                        });#}
-{#                                g.append("svg:rect")#}
-{#                                        .attr("rx", li.r)#}
-{#                                        .attr("ry", li.r)#}
-{#                                        .attr("width", li.w / 2 - 10)#}
-{#                                        .attr("height", li.h)#}
-{#                                        .style("fill", function (d) {#}
-{#                                            return colors(d);#}
-{#                                        });#}
-{##}
-{#                                g.append("svg:text")#}
-{#                                        .attr("x", (li.w / 2) / 2 - 5)#}
-{#                                        .attr("y", li.h / 2)#}
-{#                                        .attr("dy", "0.35em")#}
-{#                                        .attr("text-anchor", "middle")#}
-{#                                        .text(function (d) {#}
-{#                                            return d;#}
-{#                                        });#}
-{#                            }#}
-{##}
-{#                            function toggleLegend() {#}
-{#                                // Show or Hide the legend#}
-{#                                var legend = d3.select("#legend");#}
-{#                                if (legend.style("visibility") == "hidden") {#}
-{#                                    legend.style("visibility", "");#}
-{#                                } else {#}
-{#                                    legend.style("visibility", "hidden");#}
-{#                                }#}
-{#                            }#}
-{#                        })#}
-{#            }#}
-{#        });#}
-{##}
-{#    </script>#}
-{##}
-{#    <script type="text/javascript">#}
-{#    /**#}
-{#     *  Instantiate the datepicker#}
-{#     */#}
-{#         $('.datepicker').datepicker({#}
-{#             weekStart:1,#}
-{#             color: 'red'#}
-{#         });#}
-{#	</script>#}
-{##}
-{#    <script type="text/javascript">#}
-{#    /**#}
-{#     *  Refresh all the data if new entries are found when calling Timeular's API#}
-{#     */#}
-{#        function refresh_data(page_load){#}
-{#            var reload_time = 2000;#}
-{#            if (page_load) {#}
-{#                reload_time = 3000;#}
-{#            }#}
-{##}
-{#            $.ajax({#}
-{#                type: 'GET',#}
-{#                url: '/update_database'#}
-{#            })#}
-{#                .done(function (response) {#}
-{#                    if (response.inserted > 0 || response.edited > 0) {#}
-{#                        demo.showNotification('top', 'right', 'Found new entries, page will automatically reload in 3 seconds!', 'danger');#}
-{#                        if (response.inserted > 0 ) {#}
-{#                            demo.showNotification('top', 'right', 'Entries inserted: ' + response.inserted, 'success');#}
-{#                        }#}
-{#                        if (response.edited > 0) {#}
-{#                            demo.showNotification('top', 'right', 'Entries edited: ' + response.edited, 'success');#}
-{#                        }#}
-{#                        setTimeout(function (){             // Reload function 2 seconds after showing notification#}
-{#                            location.reload();#}
-{#                        }, reload_time);#}
-{#                    }#}
-{#                    else {#}
-{#                        // The page will not reload#}
-{#                        demo.showNotification('top', 'right', 'Everything is up to date!', 'info');#}
-{#                    }#}
-{#                })#}
-{#        }#}
-{#    </script>#}
-{##}
-{#    <script type="text/javascript">#}
-{#    /**#}
-{#     *  Helper functions for downloading a customize reports based on a valid date range#}
-{#     */#}
-{#        function show_datefields(){#}
-{#            demo.showNotification('top','right', "Please choose a Date Range for the report.","info");#}
-{#            $('#show_date_range_btn').hide();#}
-{#            $('#customized_report_dates').fadeIn();#}
-{#        }#}
-{##}
-{#        $(document).ready(function() {#}
-{#            // Customized reports - checks for valid date range before retrieving from DB#}
-{#            $('#custom_form').on('submit', function(e){#}
-{#                var fromDate = $('#fromDate').val();#}
-{#                var toDate = $('#toDate').val();#}
-{#                var isValid = validate_custom_report(fromDate, toDate);#}
-{##}
-{#                if(!isValid) {#}
-{#                        e.preventDefault();#}
-{#                }#}
-{#                else {#}
-{#                    demo.showNotification('top', 'right', "Your report: " + fromDate + " to " + toDate + " will download shortly,", "success");#}
-{#                }#}
-{#            });#}
-{#        });#}
-{##}
-{#        function validate_custom_report(fromDate, toDate){#}
-{#            if (fromDate == ''){#}
-{#                demo.showNotification('top','right', "From Date field is empty! Please enter a date.","danger");#}
-{#                $('#fromDate').focus();#}
-{##}
-{#                return false;#}
-{#            }#}
-{#            if (toDate == ''){#}
-{#                demo.showNotification('top','right', "To Date field is empty! Please enter a date.","danger");#}
-{#                $('#toDate').focus();#}
-{##}
-{#                return false;#}
-{#            }#}
-{#            if(Date.parse(fromDate) > Date.parse(toDate)) {#}
-{#                demo.showNotification('top','right', "Your date range is invalid. 'To Date' should be a date greater than 'From Date'","danger");#}
-{##}
-{#                return false;#}
-{#            }#}
-{##}
-{#            return true;#}
-{##}
-{#        }#}
-{#    </script>#}
-
-{#    <script type="text/javascript">#}
-{#    /**#}
-{#     *  Extract graphs content from the database and insert into the javascript graph functions#}
-{#     */#}
-{#        $(document).ready(function() {#}
-{##}
-{#            $.ajax({#}
-{#                type: 'GET',#}
-{#                url: '/load_analytics_graphs'#}
-{#            })#}
-{#                    .done(function (response) {#}
-{#                        console.log(response);#}
-{#                        demo.initDashboardPageCharts(response['daily_avg'], response['weekly_avg'], response['monthly_avg'], response['chart_max'])#}
-{#                        $('#daily_tracking').text(response['max_day'][1] + "%");#}
-{#                        $('#daily_max').text(response['max_day'][0]);#}
-{##}
-{#                        $('#weekly_max').text(response['max_week'][0] + "s (" + response['max_week'][1] + ")");#}
-{##}
-{#                        $('#monthly_max').text(response['max_month'][0]);#}
-{#                        $('#monthly_hours').text(" (" + response['max_month'][1] + ")");#}
-{#                    })#}
-{#        });#}
-{##}
-{#    </script>#}
-{##}
-{#    <script type="text/javascript">#}
-{#    /**#}
-{#     *  Javascript functions for setting up the analytics graphs#}
-{#     */#}
-{##}
-{#        demo = {#}
-{#            initPickColor: function () {#}
-{#                $('.pick-class-label').click(function () {#}
-{#                    var new_class = $(this).attr('new-class');#}
-{#                    var old_class = $('#display-buttons').attr('data-class');#}
-{#                    var display_div = $('#display-buttons');#}
-{#                    if (display_div.length) {#}
-{#                        var display_buttons = display_div.find('.btn');#}
-{#                        display_buttons.removeClass(old_class);#}
-{#                        display_buttons.addClass(new_class);#}
-{#                        display_div.attr('data-class', new_class);#}
-{#                    }#}
-{#                });#}
-{#            },#}
-{##}
-{#            initFormExtendedDatetimepickers: function () {#}
-{#                $('.datetimepicker').datetimepicker({#}
-{#                    icons: {#}
-{#                        time: "fa fa-clock-o",#}
-{#                        date: "fa fa-calendar",#}
-{#                        up: "fa fa-chevron-up",#}
-{#                        down: "fa fa-chevron-down",#}
-{#                        previous: 'fa fa-chevron-left',#}
-{#                        next: 'fa fa-chevron-right',#}
-{#                        today: 'fa fa-screenshot',#}
-{#                        clear: 'fa fa-trash',#}
-{#                        close: 'fa fa-remove'#}
-{#                    }#}
-{#                });#}
-{#            },#}
-{#            showNotification: function(from, align, message, color){#}
-{#                $.notify({#}
-{#                    icon: "notifications",#}
-{#                    message: message#}
-{##}
-{#                },{#}
-{#                    type: color,#}
-{#                    timer: 4000,#}
-{#                    placement: {#}
-{#                        from: from,#}
-{#                        align: align#}
-{#                    }#}
-{#                });#}
-{#            },#}
-{##}
-{#            initDashboardPageCharts: function (daily_data, weekly_data, monthly_data, chart_max) {#}
-{##}
-{#                /* ----------==========     Daily Sales Chart initialization    ==========---------- */#}
-{##}
-{#                weeklyTrackingHours = {#}
-{#                    labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],#}
-{#                    series: [#}
-{#                        weekly_data#}
-{#                    ]#}
-{#                };#}
-{##}
-{#                optionsweeklyTrackingHours = {#}
-{#                    lineSmooth: Chartist.Interpolation.cardinal({#}
-{#                        tension: 0#}
-{#                    }),#}
-{#                    low: 0,#}
-{#                    high: chart_max, // creative tim: we recommend you to set the high sa the biggest value + something for a better look#}
-{#                    chartPadding: {top: 0, right: 0, bottom: 0, left: 0},#}
-{#                }#}
-{##}
-{#                var dailySalesChart = new Chartist.Line('#dailySalesChart', weeklyTrackingHours, optionsweeklyTrackingHours);#}
-{##}
-{#                md.startAnimationForLineChart(dailySalesChart);#}
-{##}
-{##}
-{#                /* ----------==========     Completed Tasks Chart initialization    ==========---------- */#}
-{##}
-{#                dailyTrackingHours = {#}
-{#                    // number of entries during these time periods#}
-{#                    labels: ['Midnight', '4am', 'Noon', '4pm', '8pm', 'Midnight'],#}
-{#                    series: [#}
-{#                        daily_data#}
-{#                    ]#}
-{#                };#}
-{##}
-{#                optionsdailyTrackingHours = {#}
-{#                    lineSmooth: Chartist.Interpolation.cardinal({#}
-{#                        tension: 0#}
-{#                    }),#}
-{#                    low: 0,#}
-{#                    high: chart_max, // creative tim: we recommend you to set the high sa the biggest value + something for a better look#}
-{#                    chartPadding: {top: 0, right: 0, bottom: 0, left: 0}#}
-{#                }#}
-{##}
-{#                var completedTasksChart = new Chartist.Line('#completedTasksChart', dailyTrackingHours, optionsdailyTrackingHours);#}
-{##}
-{#                // start animation for the Completed Tasks Chart - Line Chart#}
-{#                md.startAnimationForLineChart(completedTasksChart);#}
-{##}
-{##}
-{#                /* ----------==========     Emails Subscription Chart initialization    ==========---------- */#}
-{##}
-{#                var hoursWorkedEachMonth = {#}
-{#                    labels: ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May'],#}
-{#                    series: [#}
-{#                        monthly_data#}
-{##}
-{#                    ]#}
-{#                };#}
-{#                var optionshoursWorkedEachMonth = {#}
-{#                    axisX: {#}
-{#                        showGrid: false#}
-{#                    },#}
-{#                    low: 0,#}
-{#                    high: chart_max,#}
-{#                    chartPadding: {top: 0, right: 5, bottom: 0, left: 0}#}
-{#                };#}
-{#                var responsiveOptions = [#}
-{#                    ['screen and (max-width: 640px)', {#}
-{#                        seriesBarDistance: 5,#}
-{#                        axisX: {#}
-{#                            labelInterpolationFnc: function (value) {#}
-{#                                return value[0];#}
-{#                            }#}
-{#                        }#}
-{#                    }]#}
-{#                ];#}
-{#                var emailsSubscriptionChart = Chartist.Bar('#emailsSubscriptionChart', hoursWorkedEachMonth, optionshoursWorkedEachMonth, responsiveOptions);#}
-{##}
-{#                //start animation for the Emails Subscription Chart#}
-{#                md.startAnimationForBarChart(emailsSubscriptionChart);#}
-{##}
-{#            }#}
-{#        }#}
-{#    </script>#}
-{##}
-{#	<script type="text/javascript">#}
-{#    	$(document).ready(function(){#}
-{#			// Javascript method's body can be found in assets/js/demos.js#}
-{#        	demo.initDashboardPageCharts();#}
-{#    	});#}
-{#	</script>#}
-
-    <script src={{ url_for('static', filename='d3pie.min.js')}}></script>
-
-    <script type="text/javascript">
-    /**
-     *  Dashboard that is loaded if the screen width is smaller than an Ipad (all mobile)
-     *      - Simple pie chart representation of the data
-     */
-
-{#        $(document).ready(function() {#}
-{##}
-{#            $.ajax({#}
-{#                type: 'GET',#}
-{#                url: '/dashboard_stats'#}
-{#            })#}
-{#                    .done(function (response) {#}
-{##}
-{#                        $('#hours_worked_bold').text(response.total_parsed);#}
-{#                        $('#hours_left').text(Math.round((755 - response.total) * 100) / 100);#}
-{#                        $('#time_entries').text(response.total_entries);#}
-{#                        $('#days_tracked').text(response.days_tracked + "+");#}
-{#                        $('#hours_this_month').text(response.hours_this_month + "+ Hours");#}
-{##}
-{#                        if (screen.width < 768) {#}
-{#                            $('#sidebar').hide();#}
-{#                            var chart_width = $('#pieChart').width();#}
-{##}
-{#                            canvasWidth = chart_width;#}
-{#                            canvasHeight = 400;#}
-{#                            smallRadius = "15%";#}
-{#                            bigRadius = "80%";#}
-{#                            general = "VCH";#}
-{#                            im = "IM";#}
-{#                            hiv = "HIV";#}
-{#                            tb = "TB";#}
-{#                            cd = "CD";#}
-{##}
-{##}
-{#                            var pie = new d3pie("pieChart", {#}
-{#                                "header": {#}
-{#                                    "title": {#}
-{#                                        "text": response.from_date + " to " + response.today,#}
-{#                                        "fontSize": 24,#}
-{#                                        "font": "open sans",#}
-{#                                        "color": "#ef5350"#}
-{#                                    },#}
-{#                                    "subtitle": {#}
-{#                                        "text": "",#}
-{#                                        "color": "#449d44",#}
-{#                                        "fontSize": 15,#}
-{#                                        "font": "open sans"#}
-{#                                    },#}
-{#                                    "titleSubtitlePadding": 0#}
-{#                                },#}
-{#                                "size": {#}
-{#                                    "canvasWidth": canvasWidth,#}
-{#                                    "canvasHeight": canvasHeight,#}
-{#                                    "pieInnerRadius": smallRadius,#}
-{#                                    "pieOuterRadius": bigRadius#}
-{#                                },#}
-{#                                "data": {#}
-{#                                    "sortOrder": "value-desc",#}
-{#                                    "content": [#}
-{#                                        {#}
-{#                                            "label": general,#}
-{#                                            "value": response.General,#}
-{#                                            "color": "#1ee675",#}
-{#                                        },#}
-{#                                        {#}
-{#                                            "label": im,#}
-{#                                            "value": response.IM,#}
-{#                                            "color": "#daca61"#}
-{#                                        },#}
-{#                                        {#}
-{#                                            "label": tb,#}
-{#                                            "value": response.TB,#}
-{#                                            "color": "#2081c1"#}
-{#                                        },#}
-{#                                        {#}
-{#                                            "label": cd,#}
-{#                                            "value": response.CD,#}
-{#                                            "color": "#e98125"#}
-{#                                        },#}
-{#                                        {#}
-{#                                            "label": hiv,#}
-{#                                            "value": response.HIV,#}
-{#                                            "color": "#cd29eb"#}
-{#                                        }#}
-{#                                    ]#}
-{#                                },#}
-{#                                "labels": {#}
-{#                                    "outer": {#}
-{#                                        "pieDistance": 32#}
-{#                                    },#}
-{#                                    "inner": {#}
-{#                                        "hideWhenLessThanPercentage": 3#}
-{#                                    },#}
-{#                                    "mainLabel": {#}
-{#                                        "fontSize": 15#}
-{#                                    },#}
-{#                                    "percentage": {#}
-{#                                        "color": "#ffffff",#}
-{#                                        "decimalPlaces": 0,#}
-{#                                        "fontSize": 15#}
-{#                                    },#}
-{#                                    "value": {#}
-{#                                        "color": "#adadad",#}
-{#                                        "fontSize": 15#}
-{#                                    },#}
-{#                                    "lines": {#}
-{#                                        "enabled": true#}
-{#                                    }#}
-{#                                },#}
-{#                                "tooltips": {#}
-{#                                    "enabled": true,#}
-{#                                    "type": "placeholder",#}
-{#                                    "string": "{label}: {value} Hours, {percentage}%",#}
-{#                                    "styles": {#}
-{#                                        "fadeInSpeed": 255,#}
-{#                                        "backgroundOpacity": 0.79#}
-{#                                    }#}
-{#                                },#}
-{#                                "effects": {#}
-{#                                    "pullOutSegmentOnClick": {#}
-{#                                        "effect": "none",#}
-{#                                        "speed": 400,#}
-{#                                        "size": 8#}
-{#                                    }#}
-{#                                },#}
-{#                                "misc": {#}
-{#                                    "gradient": {#}
-{#                                        "enabled": true,#}
-{#                                        "percentage": 100#}
-{#                                    }#}
-{#                                },#}
-{#                                "callbacks": {#}
-{#                                    "onMouseoverSegment": null,#}
-{#                                    "onMouseoutSegment": null,#}
-{#                                    "onClickSegment": null#}
-{#                                }#}
-{#                            });#}
-{#                        }#}
-{#                    });#}
-{#        });#}
-	</script>
-
-    <script type="text/javascript">
-    /**
-     *  Generate the table of recent entries from the database (any entries within the past 5 days)
-     */
-
-        // Build table with recent entries
-{#        $(document).ready(function() {#}
-{##}
-{#            $.ajax({#}
-{#                type: 'GET',#}
-{#                url: '/recent_entries'#}
-{#            })#}
-{#                    .done(function (response) {#}
-{#                        console.log(response);#}
-{#                        $('#last_5_days_entries').html(recent_entries_table(response));#}
-{##}
-{#                    });#}
-{#        });#}
-{##}
-{#        function recent_entries_table(jsonData){#}
-{#            var html = '';#}
-{#            jsonData = jsonData['entries'];#}
-{##}
-{#            for (var key in jsonData) {#}
-{#                if (jsonData.hasOwnProperty(key)) {#}
-{##}
-{#                    html += '<tr>' +#}
-{#                                '<td>' + jsonData[key][0].project.replace("Inventory Management Database", "Inventory Management") + '</td>' +#}
-{#                                '<td>' + jsonData[key][0].start.replace("GMT", "") + '</td>' +#}
-{#                                '<td>' + jsonData[key][0].end.replace("GMT", "") + '</td>' +#}
-{#                                '<td>' + jsonData[key][0].duration + '</td>' +#}
-{#                                '<td>' + jsonData[key][0].notes + '</td>' +#}
-{#                            '</tr>';#}
-{#                }#}
-{#            }#}
-{##}
-{#        return html;#}
-{#        }#}
-    </script>
+    <!-- JS queries -->
+    <script src="{{ url_for('static', filename='assets/js/db_queries.js')}}"> </script>
 
 </html>

@@ -3,14 +3,6 @@ from flask import Blueprint
 from app import app
 
 
-"""
-TODO
-    -Set clear objectives
-    -Define mission and what is the tracking related to
-    -Expected time vs completion time
-
-"""
-
 # Define the blueprint: 'highlights', set its url prefix: app.url/highlights
 db_setup = Blueprint('dbsetup', __name__)
 
@@ -82,6 +74,7 @@ class Competition(db.Model):
         self.name = name
         self.winner = winner
         self.name = name
+
 
 class Game(db.Model):
     __tablename__ = 'Game'

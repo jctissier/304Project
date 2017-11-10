@@ -16,5 +16,4 @@ SQLALCHEMY_DATABASE_URI = 'sqlite:///C:\\Users\\edwar\\Documents\\cpsc304\\304Pr
 
 # TestDB
 
-
 SQLALCHEMY_TRACK_MODIFICATIONS = False
