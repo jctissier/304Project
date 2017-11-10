@@ -1,7 +1,7 @@
 from flask import Blueprint, request, render_template, make_response, jsonify
 
 from app.util.util import gzipped
-from app.db.database import ZeiDB
+from app.db.database import Athlete, Coach, Competition, Game, Season, Stadium, Team, db
 
 
 # Define the blueprint: 'sunburst'
@@ -18,6 +18,6 @@ def dashboard():
 @sunburst.route('/load_sunburst', methods=['GET'])
 @gzipped
 def load_sunburst():
-    data = ZeiDB.query.all()
+    data = db.query.all()
 
     return data
