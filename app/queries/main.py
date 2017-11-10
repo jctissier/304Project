@@ -5,7 +5,7 @@ from app.util.util import gzipped
 import collections
 from datetime import datetime, timedelta
 from flask import Blueprint, request, render_template, make_response, jsonify
-from app.db.database import Athlete, Coach, Competition, Game, Season, Stadium, Stats, Team, db
+from app.db.database import Athlete, Coach, Competition, Game, Season, Stadium, Team, db
 from sqlalchemy import text
 
 
@@ -38,8 +38,27 @@ def load_pie():
 
     return jsonify({'entries': json_data})
 
-@queries.route('/set_testDB', methods=['GET', 'POST']) #set data in test db
+@queries.route('/insert_athlete_entry', methods=['GET', 'POST']) #insert some row, change the sql statement
 @gzipped
 def set_testDB():
-    sql = text('''UPDATE ZeiTracking SET project = "TEST" WHERE project = "TB Database"''')
+    sql = text('''INSERT INTO Athlete (ID, Salary, Name, DOB, Status, placeOfBirth, countryID, goals, assists, wins, losses) 
+                  VALUES (11, 999, "Test Dude9", "2017-9-11", "Retired", "CA", "US", 1, 2, 3, 4)''')
     result = db.engine.execute(sql)
+
+    data = Athlete.query.all()
+    # Athlete.query.all()[7].salary
+    json_data = collections.OrderedDict({})
+    for i in data:
+        json_data.update({
+                [{
+                     'id': i.id,
+                     'salary': i.salary,
+                     'name': i.name,
+                     'dob': i.dob,
+                     'status': i.status,
+                     'placeOfBirth': i.placeOfBirth,
+                     'countryID': i.countryID
+                }]
+            })
+
+    return jsonify({'entries': json_data})

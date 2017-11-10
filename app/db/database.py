@@ -32,8 +32,12 @@ class Athlete(db.Model):
     status = db.Column('status', db.String(100))
     placeOfBirth = db.Column('placeOfBirth', db.String(100))
     countryID = db.Column('countryID', db.String(100))
+    goals = db.Column('goals', db.Integer)
+    assists = db.Column('assists', db.Integer)
+    wins = db.Column('wins', db.Integer)
+    losses = db.Column('losses', db.Integer)
 
-    def __init__(self, id, salary, name, dob, status, placeOfBirth, countryID):
+    def __init__(self, id, salary, name, dob, status, placeOfBirth, countryID, goals, assists, wins, losses):
         self.id = id
         self.salary = salary
         self.name = name
@@ -41,6 +45,10 @@ class Athlete(db.Model):
         self.status = status
         self.placeOfBirth = placeOfBirth
         self.countryID = countryID
+        self.goals = goals
+        self.assists = assists
+        self.wins = wins
+        self.losses = losses
 
 
 class Coach(db.Model):
@@ -82,7 +90,7 @@ class Game(db.Model):
     gameID = db.Column('gameID', db.Integer, primary_key=True)
     round = db.Column('column', db.Integer)
     winningTeamID = db.Column('winningTeamID', db.Integer)
-    losingTeamID = db.COlumn('losingTeamID', db.Integer)
+    losingTeamID = db.Column('losingTeamID', db.Integer)
 
     def __init__(self, score, gameID, round, winngingTeamID, losingTeamID):
         self.score = score
@@ -114,21 +122,6 @@ class Stadium(db.Model):
         self.location = location
 
 
-class Stats(db.Model):
-    __tablename__ = 'Stats'
-
-    goals = db.Column('goals', db.Integer)
-    assists = db.Column('assists', db.Integer)
-    wins = db.Column('wins', db.Integer)
-    losses = db.Column('losses', db.Integer)
-
-    def __init__(self, goals, assists, wins, losses):
-        self.goals = goals
-        self.assists = assists
-        self.wins = wins
-        self.losses = losses
-
-
 class Team(db.Model):
     __tablename__ = 'Team'
 
@@ -136,9 +129,17 @@ class Team(db.Model):
     teamID = db.Column('teamID', db.Integer, primary_key=True)
     location = db.Column('location', db.String(100))
     dateCreated = db.Column('dateCreated', db.Date)
+    goals = db.Column('goals', db.Integer)
+    assists = db.Column('assists', db.Integer)
+    wins = db.Column('wins', db.Integer)
+    losses = db.Column('losses', db.Integer)
 
-    def __init__(self, name, teamID, location, dateCreated):
+    def __init__(self, name, teamID, location, dateCreated, goals, assists, wins, losses):
         self.name = name
         self.teamID = teamID
         self.location = location
         self.dateCreated = dateCreated
+        self.goals = goals
+        self.assists = assists
+        self.wins = wins
+        self.losses = losses
