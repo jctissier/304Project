@@ -22,9 +22,6 @@
     <link href="{{ url_for('static', filename='assets/css/bootstrap-datepicker.css')}}" rel="stylesheet" />
 
     <style type="text/css">
-        .desktop-hidden {
-            margin-top: 0px!important;
-        }
 
         @media (max-width: 992px) {
             .mobile-friendly {
@@ -225,19 +222,40 @@
 
                                     <div class="card-content">
                                         <div class="tab-content">
+
+                                            <!-- SELECT QUERIES -->
                                             <div class="tab-pane active" id="select_tab">
 
+                                                <div class="modal fade" id="select-modal" tabindex="-1" role="dialog" aria-labelledby="select-modal-label" aria-hidden="true">
+                                                    <div class="modal-dialog" style="margin-top:30px;">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header" style="padding: 15px 15px 5px 15px;">
+                                                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                                                                <h5 class="modal-title" id="streamLabel_id">JSON Response</h5>
+                                                            </div>
+                                                            <div class="modal-body" id="select-response" style="padding: 10px;">
+                                                                <pre style="padding-top:15px;"><code class="json hljs" id="select-response-json" style="background-color: #f5f5f5!important;color: black"></code></pre>
+                                                            </div>
+                                                            <div class="modal-footer" style="margin-top:0px;padding: 3px;">
+                                                                <button type="button" class="btn btn-md" data-dismiss="modal" style="width: 100%;background-color:#22aba6;">
+                                                                    <i class="icon-close"></i> Close
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
                                                 <div class="col-md-4"></div>
-                                                <div class="col-md-4">
+                                                <div class="col-md-4" style="text-align: center;">
                                                     <div class="dropdown">
                                                         <a href="#" class="btn btn-md btn-warning dropdown-toggle" data-toggle="dropdown">
                                                             Select Query Options
                                                             <b class="caret"></b>
                                                         </a>
-                                                        <ul class="dropdown-menu">
-                                                            <li><a onclick="select_athlete()">Athlete Table</a></li>
-                                                            <li><a>Competition Table</a></li>
+                                                        <ul class="dropdown-menu" style="left:50%;right:auto;transform:translate(-50%,0);">
+                                                            <li><a onclick="select_queries('Athlete')">Athlete Table</a></li>
+                                                            <li><a onclick="select_queries('Team')">Team Table</a></li>
+                                                            <li><a onclick="select_queries('Coach')">Coach Table</a></li>
                                                         </ul>
                                                     </div>
                                                 </div>
@@ -245,59 +263,21 @@
 
                                                 <div class="divider"></div>
 
-                                                <pre style="padding-top:15px;background: #2b2b2b;"><code class="sql hljs">SELECT aName, countryID, dob, placeOfBirth, salary, aStatus FROM Athlete;</code></pre>
+                                                <div id="select-content" style="display: none;">
+                                                    <pre style="padding-top:15px;background: #2b2b2b;" id="select_query_athlete"><code class="sql hljs">SELECT aId, aName, countryID, dob, placeOfBirth, salary, aStatus, goals, assists, wins, losses FROM Athlete;</code></pre>
+                                                    <pre style="padding-top:15px;background: #2b2b2b;" id="select_query_team"><code class="sql hljs">SELECT teamID, aName, location, dateCreated, goals, assists, wins, losses FROM Team;</code></pre>
+                                                    <pre style="padding-top:15px;background: #2b2b2b;" id="select_query_coach"><code class="sql hljs">SELECT cId, aName, salary, dob, astatus, placeOfBirth, countryID FROM Coach;</code></pre>
+                                                    <div class="row" style="text-align: center;" id="select-json-btn">
+                                                        <button class="btn btn-success btn-sm" style="margin-bottom:20px;padding-top:8px;background-color: #22aba6;" data-toggle="modal" data-target="#select-modal">Show JSON Query Response</button>
+                                                    </div>
 
-                                                <div class="card-content table-responsive table-full-width" style="padding: 30px;">
-                                                    <table class="table">
-                                                        <thead class="text-danger">
-                                                            <th>Name</th>
-                                                            <th>Country</th>
-                                                            <th>City</th>
-                                                            <th>Salary</th>
-                                                        </thead>
-                                                        <tbody id="select_table_insertion">
-                                                            <tr>
-                                                                <td>Dakota Rice</td>
-                                                                <td>Niger</td>
-                                                                <td>Oud-Turnhout</td>
-                                                                <td class="text-primary">$36,738</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Minerva Hooper</td>
-                                                                <td>Curaçao</td>
-                                                                <td>Sinaai-Waas</td>
-                                                                <td class="text-primary">$23,789</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Sage Rodriguez</td>
-                                                                <td>Netherlands</td>
-                                                                <td>Baileux</td>
-                                                                <td class="text-primary">$56,142</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Philip Chaney</td>
-                                                                <td>Korea, South</td>
-                                                                <td>Overland Park</td>
-                                                                <td class="text-primary">$38,735</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Doris Greene</td>
-                                                                <td>Malawi</td>
-                                                                <td>Feldkirchen in Kärnten</td>
-                                                                <td class="text-primary">$63,542</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Mason Porter</td>
-                                                                <td>Chile</td>
-                                                                <td>Gloucester</td>
-                                                                <td class="text-primary">$78,615</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-
+                                                    <div class="card-content table-responsive table-full-width" style="padding: 30px;">
+                                                        <table class="table" id="select_table_insertion"></table>
+                                                    </div>
                                                 </div>
                                             </div>
 
+                                            <!-- INSERT QUERIES -->
                                             <div class="tab-pane" id="insert_tab">
                                                 Second Tab
                                             </div>
@@ -338,7 +318,7 @@
         <footer class="footer">
             <div class="container-fluid">
                 <p class="copyright pull-right">
-                    &copy; <script>document.write(new Date().getFullYear())</script> Built for <a href="https://github.com/jctissier/304Project">CPSC 304</a>
+                    &copy; <script>document.write(new Date().getFullYear())</script> Built for <a href="https://github.com/jctissier/304Project">CPSC 304 Project</a>
                 </p>
             </div>
         </footer>
@@ -347,14 +327,11 @@
 </body>
 
 	<!--   Core JS Files   -->
-{#	<script src="{{ url_for('static', filename='assets/js/jquery-3.1.0.min.js')}}" type="text/javascript"></script>#}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
 
-{#    <script src="//google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>#}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script type="text/javascript">console.log('Loaded');</script>
 
 
 	<script src="{{ url_for('static', filename='assets/js/bootstrap.min.js')}}" type="text/javascript"></script>

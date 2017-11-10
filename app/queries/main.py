@@ -1,12 +1,9 @@
-from flask import Flask, render_template, jsonify, make_response, request, send_from_directory
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import extract
 from app.util.util import gzipped
 import collections
-from datetime import datetime, timedelta
-from flask import Blueprint, request, render_template, make_response, jsonify
+from flask import Blueprint, request, render_template, jsonify
 from app.db.database import Athlete, Coach, Competition, Game, Season, Stadium, Team, db
 from sqlalchemy import text
+import app.queries.models as helper
 
 
 # Define the blueprint: 'queries'
@@ -16,33 +13,54 @@ queries = Blueprint('queries', __name__)
 @queries.route('/')
 @gzipped
 def load():
+    """
+    Loads the HTML template
+    """
     return render_template("dashboard.html")
 
 
 """ SELECT QUERIES """
 
 
-@queries.route('/select_athlete', methods=['GET', 'POST'])         # Example
+@queries.route('/select_query', methods=['GET', 'POST'])         # Example
 @gzipped
 def select_athlete():
-    data = Athlete.query.all()
+    """
+    SELECT queries from table: Athlete, Team or Coach
+    :return: JSON{} - entries in table
+    """
+    select_table = request.form['table_name']
 
-    # # Number of entries (unique)
-    # entries = db.session.query(Athlete).count()
-
-    json_data = collections.OrderedDict({})
-    for i in data:
-        json_data.update({
-            i.id:
-                [{
-                     'salary': i.salary,
-                     'name': i.name,
-                     'dob': i.dob,
-                     'status': i.status,
-                     'placeOfBirth': i.placeOfBirth,
-                     'countryID': i.countryID
-                }]
-            })
+    if select_table == "Athlete":                           # Query Athlete table
+        a_sql = text('''SELECT athlete.id, athlete.salary, athlete.name, athlete.dob, athlete.status, athlete.placeOfBirth,
+                        athlete.countryID, athlete.goals, athlete.assists, athlete.wins, athlete.losses
+                        FROM Athlete''')
+        data = db.engine.execute(a_sql)
+        a_data = [list(row) for row in data]                # Python list comprehension
+        """
+        Example of how the data extract looks like for Athlete
+            [[1, 123000, 'Edward C', '1991-05-24', 'Active', 'CA', 'CA', None, None, None, None],
+            [5, 999, 'Test Dude3', '2017-9-11', 'Retired', 'CA', 'US', None, None, None, None],
+            [6, 999, 'Test Dude4', '2017-9-11', 'Retired', 'CA', 'US', None, None, None, None],
+            [7, 999, 'Test Dude5', '2017-9-11', 'Retired', 'CA', 'US', None, None, None, None]]
+        """
+        json_data = helper.select_athlete_table(data=a_data)
+    elif select_table == "Team":                            # Query Team table
+        a_sql = text('''SELECT Team.TeamID, Team.name, Team.location, Team.dateCreated, Team.goals,
+                        Team.assists, Team.wins, Team.losses
+                        FROM Team''')
+        data = db.engine.execute(a_sql)
+        t_data = [list(row) for row in data]
+        json_data = helper.select_team_table(data=t_data)
+    elif select_table == "Coach":                           # Query Coach table
+        a_sql = text('''SELECT Coach.id, Coach.salary, Coach.name, Coach.dob, Coach.status, Coach.placeOfBirth,
+                        Coach.countryID
+                        FROM Coach''')
+        data = db.engine.execute(a_sql)
+        c_data = [list(row) for row in data]  # Python list comprehension
+        json_data = helper.select_coach_table(data=c_data)
+    else:
+        exit("This should never happen")
 
     return jsonify({'entries': json_data})
 
@@ -50,27 +68,30 @@ def select_athlete():
 """ INSERT QUERIES """
 
 
-@queries.route('/insert_athlete_entry', methods=['GET', 'POST'])    #insert some row, change the sql statement
+@queries.route('/insert_query', methods=['GET', 'POST'])
 @gzipped
-def set_testDB():
-    sql = text('''INSERT INTO Athlete (ID, Salary, Name, DOB, Status, placeOfBirth, countryID, goals, assists, wins, losses)
-                  VALUES (11, 999, "Test Dude9", "2017-9-11", "Retired", "CA", "US", 1, 2, 3, 4)''')
-    result = db.engine.execute(sql)
+def insert_query():
+    """Athlete, Team or Coach"""
 
-    data = Athlete.query.all()
-    # Athlete.query.all()[7].salary
-    json_data = collections.OrderedDict({})
-    for i in data:
-        json_data.update({
-                [{
-                     'id': i.id,
-                     'salary': i.salary,
-                     'name': i.name,
-                     'dob': i.dob,
-                     'status': i.status,
-                     'placeOfBirth': i.placeOfBirth,
-                     'countryID': i.countryID
-                }]
-            })
+    query_table = "Athlete"
 
-    return jsonify({'entries': json_data})
+    if query_table == "Athlete":
+        table = 'Athlete (Salary, Name, DOB, Status, placeOfBirth, countryID, goals, assists, wins, losses)'
+        vals = 'VALUES (39843, "Robben", "1972-01-30", "Active", "HOL", "GER", 32, 98, 84, 1)'
+    elif query_table == "Team":
+        table = 'Team (name, location, dateCreated, goals, assists, wins, losses)'
+        vals = 'VALUES ()'
+    elif query_table == "Coach":
+        table = 'Coach (salary, name, dob, status, placeOfBirth, countryID)'
+        vals = 'VALUES ()'
+    else:
+        return jsonify({'error': "Invalid Table Name"})
+
+    sql = text('''INSERT INTO ''' + table + vals)
+    db.engine.execute(sql)                                      # Runs the SQL INSERT
+
+    return jsonify({
+        'query_type': 'INSERT',
+        'table': query_table,
+        'Code': 200
+    })
