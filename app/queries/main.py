@@ -9,7 +9,6 @@ import app.queries.models as helper
 # Define the blueprint: 'queries'
 queries = Blueprint('queries', __name__)
 
-
 @queries.route('/')
 @gzipped
 def load():
