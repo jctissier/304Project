@@ -220,55 +220,57 @@
                                         </div>
                                     </div>
 
+                                    <!-- JSON Response Modal -->
+                                    <div class="modal fade" id="response-modal" tabindex="-1" role="dialog" aria-labelledby="select-modal-label" aria-hidden="true">
+                                        <div class="modal-dialog" style="margin-top:15px;">
+                                            <div class="modal-content">
+                                                <div class="modal-header" style="padding: 15px 15px 5px 15px;">
+                                                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                                                    <h5 class="modal-title" id="streamLabel_id">JSON Response</h5>
+                                                </div>
+                                                <div class="modal-body" id="select-response" style="padding: 10px;">
+                                                    <pre style="padding-top:15px;"><code class="json hljs" id="response-json" style="background-color: #f5f5f5!important;color: black"></code></pre>
+                                                </div>
+                                                <div class="modal-footer" style="margin-top:0px;padding: 3px;">
+                                                    <button type="button" class="btn btn-md" data-dismiss="modal" style="width: 100%;background-color:#22aba6;">
+                                                        <i class="icon-close"></i> Close
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div class="card-content">
                                         <div class="tab-content">
 
                                             <!-- SELECT QUERIES -->
                                             <div class="tab-pane active" id="select_tab">
 
-                                                <div class="modal fade" id="select-modal" tabindex="-1" role="dialog" aria-labelledby="select-modal-label" aria-hidden="true">
-                                                    <div class="modal-dialog" style="margin-top:30px;">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header" style="padding: 15px 15px 5px 15px;">
-                                                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                                                                <h5 class="modal-title" id="streamLabel_id">JSON Response</h5>
-                                                            </div>
-                                                            <div class="modal-body" id="select-response" style="padding: 10px;">
-                                                                <pre style="padding-top:15px;"><code class="json hljs" id="select-response-json" style="background-color: #f5f5f5!important;color: black"></code></pre>
-                                                            </div>
-                                                            <div class="modal-footer" style="margin-top:0px;padding: 3px;">
-                                                                <button type="button" class="btn btn-md" data-dismiss="modal" style="width: 100%;background-color:#22aba6;">
-                                                                    <i class="icon-close"></i> Close
-                                                                </button>
-                                                            </div>
+                                                <div class="row">
+                                                    <div class="col-md-4"></div>
+                                                    <div class="col-md-4" style="text-align: center;">
+                                                        <div class="dropdown">
+                                                            <a href="#" class="btn btn-md btn-warning dropdown-toggle" data-toggle="dropdown">
+                                                                Select Query Options <b class="caret"></b>
+                                                            </a>
+                                                            <ul class="dropdown-menu" style="left:50%;right:auto;transform:translate(-50%,0);">
+                                                                <li><a onclick="select_queries('Athlete')">Athlete Table</a></li>
+                                                                <li><a onclick="select_queries('Team')">Team Table</a></li>
+                                                                <li><a onclick="select_queries('Coach')">Coach Table</a></li>
+                                                            </ul>
                                                         </div>
                                                     </div>
+                                                    <div class="col-md-4"></div>
                                                 </div>
-
-                                                <div class="col-md-4"></div>
-                                                <div class="col-md-4" style="text-align: center;">
-                                                    <div class="dropdown">
-                                                        <a href="#" class="btn btn-md btn-warning dropdown-toggle" data-toggle="dropdown">
-                                                            Select Query Options
-                                                            <b class="caret"></b>
-                                                        </a>
-                                                        <ul class="dropdown-menu" style="left:50%;right:auto;transform:translate(-50%,0);">
-                                                            <li><a onclick="select_queries('Athlete')">Athlete Table</a></li>
-                                                            <li><a onclick="select_queries('Team')">Team Table</a></li>
-                                                            <li><a onclick="select_queries('Coach')">Coach Table</a></li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4"></div>
 
                                                 <div class="divider"></div>
 
                                                 <div id="select-content" style="display: none;">
-                                                    <pre style="padding-top:15px;background: #2b2b2b;" id="select_query_athlete"><code class="sql hljs">SELECT aId, aName, countryID, dob, placeOfBirth, salary, aStatus, goals, assists, wins, losses FROM Athlete;</code></pre>
-                                                    <pre style="padding-top:15px;background: #2b2b2b;" id="select_query_team"><code class="sql hljs">SELECT teamID, aName, location, dateCreated, goals, assists, wins, losses FROM Team;</code></pre>
-                                                    <pre style="padding-top:15px;background: #2b2b2b;" id="select_query_coach"><code class="sql hljs">SELECT cId, aName, salary, dob, astatus, placeOfBirth, countryID FROM Coach;</code></pre>
+                                                    <pre style="padding-top:15px;background: #2b2b2b;" id="select_query_athlete"><code class="sql hljs">SELECT aId, aName, countryID, dob, placeOfBirth, salary, aStatus, goals, assists, wins, losses FROM Athlete</code></pre>
+                                                    <pre style="padding-top:15px;background: #2b2b2b;" id="select_query_team"><code class="sql hljs">SELECT teamID, aName, location, dateCreated, goals, assists, wins, losses FROM Team</code></pre>
+                                                    <pre style="padding-top:15px;background: #2b2b2b;" id="select_query_coach"><code class="sql hljs">SELECT cId, aName, salary, dob, astatus, placeOfBirth, countryID FROM Coach</code></pre>
                                                     <div class="row" style="text-align: center;" id="select-json-btn">
-                                                        <button class="btn btn-success btn-sm" style="margin-bottom:20px;padding-top:8px;background-color: #22aba6;" data-toggle="modal" data-target="#select-modal">Show JSON Query Response</button>
+                                                        <button class="btn btn-success btn-sm" style="margin-bottom:20px;padding-top:8px;background-color: #22aba6;" data-toggle="modal" data-target="#response-modal">Show JSON Query Response</button>
                                                     </div>
 
                                                     <div class="card-content table-responsive table-full-width" style="padding: 30px;">
@@ -279,13 +281,132 @@
 
                                             <!-- INSERT QUERIES -->
                                             <div class="tab-pane" id="insert_tab">
-                                                Second Tab
+                                                <div class="row">
+                                                    <div class="col-md-4"></div>
+                                                    <div class="col-md-4" style="text-align: center;">
+                                                        <div class="dropdown">
+                                                            <a href="#" class="btn btn-md btn-warning dropdown-toggle" data-toggle="dropdown">
+                                                                Insert Query Options <b class="caret"></b>
+                                                            </a>
+                                                            <ul class="dropdown-menu" style="left:50%;right:auto;transform:translate(-50%,0);">
+                                                                <li><a onclick="insert_options('Athlete')">Athlete Table</a></li>
+                                                                <li><a onclick="insert_options('Team')">Team Table</a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4"></div>
+                                                </div>
+
+                                                <div class="divider"></div>
+
+                                                <div id="insert-options">
+                                                    <!-- Athlete Options -->
+                                                    <div class="row" id="insert-athlete-options" style="display: none;">
+                                                        <div class="col-md-4" style="text-align: center;">
+                                                            <div class="dropdown">
+                                                                <a href="#" class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown">
+                                                                    Choose Athlete Name<b class="caret"></b>
+                                                                </a>
+                                                                <ul class="dropdown-menu" style="left:50%;right:auto;transform:translate(-50%,0);">
+                                                                    <li><a onclick="insert_dropdown('Ronaldinho', 'aName')" id="insert-Ronaldinho">Ronaldinho</a></li>
+                                                                    <li><a onclick="insert_dropdown('Neymar', 'aName')" id="insert-Neymar">Neymar</a></li>
+                                                                    <li><a onclick="insert_dropdown('Zlatan', 'aName')" id="insert-Zlatan">Zlatan</a></li>
+                                                                    <li><a onclick="insert_dropdown('Pele', 'aName')" id="insert-Pele">Pele</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4" style="text-align: center;">
+                                                            <div class="dropdown">
+                                                                <a href="#" class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown">
+                                                                    Choose Athlete Status<b class="caret"></b>
+                                                                </a>
+                                                                <ul class="dropdown-menu" style="left:50%;right:auto;transform:translate(-50%,0);">
+                                                                    <li><a onclick="insert_dropdown('Active', 'aStatus')" id="insert-Active">Active</a></li>
+                                                                    <li><a onclick="insert_dropdown('Retired', 'aStatus')" id="insert-Retired">Retired</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="row" style="text-align: center;">
+                                                                <button class="btn btn-success btn-sm" style="margin-bottom:10px;padding-top:8px;background-color: #22aba6;" onclick="insert_queries('Athlete')">Run Query</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-12">
+                                                            <pre style="padding-top:15px;background: #2b2b2b;" id="insert_query_athlete_demo"><code class="sql hljs"><span class="hljs-keyword">INSERT INTO </span>Athlete (salary, aName, dob, aStatus, placeOfBirth, countryID, goals, assists, wins, losses) &#10;<span class="hljs-keyword">VALUES </span>(1000000, "choose_name", "1970-01-05", "choose_status", "CAN", "CAN", 15, 10, 10, 0)</code></pre>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Team Options -->
+                                                    <div class="row" id="insert-team-options" style="display: none;">
+                                                        <div class="col-md-4" style="text-align: center;">
+                                                            <div class="dropdown">
+                                                                <a href="#" class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown">
+                                                                    Choose Team Name<b class="caret"></b>
+                                                                </a>
+                                                                <ul class="dropdown-menu" style="left:50%;right:auto;transform:translate(-50%,0);">
+                                                                    <li><a onclick="insert_dropdown('UBCFC', 'tName')" id="insert-UBCFC">UBC FC</a></li>
+                                                                    <li><a onclick="insert_dropdown('CPSC304', 'tName')" id="insert-CPSC304">CPSC 304</a></li>
+                                                                    <li><a onclick="insert_dropdown('Whitecaps', 'tName')" id="insert-Whitecaps">Whitecaps FC</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4" style="text-align: center;">
+                                                            <div class="dropdown">
+                                                                <a href="#" class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown">
+                                                                    Choose Team Location<b class="caret"></b>
+                                                                </a>
+                                                                <ul class="dropdown-menu" style="left:50%;right:auto;transform:translate(-50%,0);">
+                                                                    <li><a onclick="insert_dropdown('Vancouver', 'tLocation')" id="insert-Vancouver">Vancouver</a></li>
+                                                                    <li><a onclick="insert_dropdown('Seattle', 'tLocation')" id="insert-Seattle">Seattle</a></li>
+                                                                    <li><a onclick="insert_dropdown('Toronto', 'tLocation')" id="insert-Toronto">Toronto</a></li>
+                                                                    <li><a onclick="insert_dropdown('Paris', 'tLocation')" id="insert-Paris">Paris</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="row" style="text-align: center;">
+                                                                <button class="btn btn-success btn-sm" style="margin-bottom:10px;padding-top:8px;background-color: #22aba6;" onclick="insert_queries('Team')">Run Query</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-12">
+                                                            <pre style="padding-top:15px;background: #2b2b2b;" id="insert_query_team_demo"><code class="sql hljs"><span class="hljs-keyword">INSERT INTO </span>Team (tName, location, dateCreated, goals, assists, wins, losses) &#10;<span class="hljs-keyword">VALUES </span>("choose_name", "choose_location", "2018-01-01", 168, 153, 55, 20)</code></pre>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="divider"></div>
+
+                                                <div id="insert-content">
+                                                    <div id="insert-athlete-content" style="display: none;">
+                                                        <pre style="padding-top:15px;background: #2b2b2b;" id="insert_query_athlete"><code class="sql hljs"><span class="hljs-keyword">INSERT INTO </span>Athlete (salary, aName, dob, aStatus, placeOfBirth, countryID, goals, assists, wins, losses) &#10;<span class="hljs-keyword">VALUES </span><span id="insert-athlete-vals"></span></code></pre>
+
+                                                        <div class="row" style="text-align: center;" id="select-json-btn">
+                                                            <button class="btn btn-success btn-sm" style="margin-bottom:20px;padding-top:8px;background-color: #22aba6;" data-toggle="modal" data-target="#response-modal">Show JSON Query Response</button>
+                                                        </div>
+                                                        <div class="card-content table-responsive table-full-width" style="padding: 30px;">
+                                                            <table class="table" id="insert_table_insertion_athlete"></table>
+                                                        </div>
+                                                    </div>
+                                                    <div id="insert-team-content"style="display: none;">
+                                                        <pre style="padding-top:15px;background: #2b2b2b;" id="insert_query_team"><code class="sql hljs"><span class="hljs-keyword">INSERT INTO </span>Team (tName, location, dateCreated, goals, assists, wins, losses) &#10;<span class="hljs-keyword">VALUES </span><span id="insert-team-vals"></span></code></pre>
+
+                                                        <div class="row" style="text-align: center;" id="select-json-btn">
+                                                            <button class="btn btn-success btn-sm" style="margin-bottom:20px;padding-top:8px;background-color: #22aba6;" data-toggle="modal" data-target="#response-modal">Show JSON Query Response</button>
+                                                        </div>
+                                                        <div class="card-content table-responsive table-full-width" style="padding: 30px;">
+                                                            <table class="table" id="insert_table_insertion_team"></table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
                                             </div>
 
+                                            <!-- DELETE QUERIES -->
                                             <div class="tab-pane" id="delete_tab">
                                                 Third Tab
                                             </div>
 
+                                            <!-- UPDATE QUERIES -->
                                             <div class="tab-pane" id="update_tab">
                                                 Fourth Tab
                                             </div>

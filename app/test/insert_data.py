@@ -20,4 +20,4 @@ def insert(query_table):
     db.engine.execute(sql)
 
 
-insert("Coach")
+# insert("Coach")

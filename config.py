@@ -8,7 +8,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 # Connect to the database
 
-# Mac 
+# Mac
 SQLALCHEMY_DATABASE_URI = 'sqlite://///' + os.path.join(basedir, 'projectDB.sqlite3')
 
 # Windows

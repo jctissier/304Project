@@ -73,7 +73,6 @@ class Competition(db.Model):
     def __init__(self, name, winner):
         self.name = name
         self.winner = winner
-        self.name = name
 
 
 class Game(db.Model):
@@ -84,13 +83,27 @@ class Game(db.Model):
     round = db.Column('column', db.Integer)
     winningTeamID = db.Column('winningTeamID', db.Integer)
     losingTeamID = db.Column('losingTeamID', db.Integer)
+    competitionID = db.Column('competitionID', db.Integer)
+    seasonID = db.Column('stadiumID', db.Integer)
 
-    def __init__(self, score, gameID, round, winngingTeamID, losingTeamID):
+    def __init__(self, score, gameID, round, winngingTeamID, losingTeamID, seasonID):
         self.score = score
         self.gameID = gameID
         self.round = round
         self.winningTeamID = winngingTeamID
         self.losingTeamID = losingTeamID
+        self.seasonID = seasonID
+
+
+class GameGoal(db.Model):
+    __tablename__ = 'GameGoal'
+
+    gameID = db.Column('gameID', db.Integer, primary_key=True)
+    athleteID = db.Column('id', db.Integer)
+
+    def __init__(self, gameID, athleteID):
+        self.gameID = gameID
+        self.athleteID = athleteID
 
 
 class Season(db.Model):
@@ -98,10 +111,12 @@ class Season(db.Model):
 
     seasonID = db.Column('seasonID', db.Integer, primary_key=True)
     year = db.Column('year', db.Integer)
+    location = db.Column('location', db.String(100))
 
-    def __init__(self, seasonID, year):
+    def __init__(self, seasonID, year, location):
         self.seasonID = seasonID
         self.year = year
+        self.location = location
 
 
 class Stadium(db.Model):
