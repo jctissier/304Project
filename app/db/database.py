@@ -18,6 +18,7 @@ class Athlete(db.Model):
     __tablename__ = 'Athlete'
 
     id = db.Column('id', db.Integer, primary_key=True)
+    teamID = db.Column('teamID', db.Integer)
     salary = db.Column('salary', db.Integer)
     name = db.Column('name', db.String(100))
     dob = db.Column('dob', db.Date)
@@ -29,8 +30,9 @@ class Athlete(db.Model):
     wins = db.Column('wins', db.Integer)
     losses = db.Column('losses', db.Integer)
 
-    def __init__(self, id, salary, name, dob, status, placeOfBirth, countryID, goals, assists, wins, losses):
+    def __init__(self, id, teamID, salary, name, dob, status, placeOfBirth, countryID, goals, assists, wins, losses):
         self.id = id
+        self.teamID = teamID
         self.salary = salary
         self.name = name
         self.dob = dob
