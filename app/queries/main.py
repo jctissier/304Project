@@ -68,7 +68,7 @@ def select_athlete():
 @gzipped
 def join_3_query():
     """Finds all players from country X who scored at least one goal
-    in a game played in Y city and Z year"""
+    in a game played in Y city and Z year."""
     desired_country = "Brazil"
     desired_gameDest = "Paris"
     desired_gameYear = "Year"
