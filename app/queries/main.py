@@ -59,7 +59,7 @@ def select_athlete():
         c_data = [list(row) for row in data]  # Python list comprehension
         json_data = helper.select_coach_table(data=c_data)
     else:
-        exit("This should never happen")
+        exit("This should never happen. ")
 
     return jsonify({'entries': json_data})
 
