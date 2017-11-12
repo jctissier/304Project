@@ -18,7 +18,7 @@ class Athlete(db.Model):
     __tablename__ = 'Athlete'
 
     id = db.Column('id', db.Integer, primary_key=True)
-    teamID = db.Column('teamID', db.Integer)
+    teamID = db.Column('teamID', db.Integer, db.ForeignKey('team.teamID'))
     salary = db.Column('salary', db.Integer)
     name = db.Column('name', db.String(100))
     dob = db.Column('dob', db.Date)
@@ -83,10 +83,11 @@ class Game(db.Model):
     score = db.Column('score', db.String(100))
     gameID = db.Column('gameID', db.Integer, primary_key=True)
     round = db.Column('column', db.Integer)
-    winningTeamID = db.Column('winningTeamID', db.Integer)
-    losingTeamID = db.Column('losingTeamID', db.Integer)
-    competitionID = db.Column('competitionID', db.Integer)
-    seasonID = db.Column('stadiumID', db.Integer)
+    winningTeamID = db.Column('winningTeamID', db.Integer, db.ForeignKey('team.teamID'))
+    losingTeamID = db.Column('losingTeamID', db.Integer, db.ForeignKey('team.teamID'))
+    competitionID = db.Column('competitionID', db.Integer, db.ForeignKey('competition.name'))
+    seasonID = db.Column('stadiumID', db.Integer, db.ForeignKey('season.seasonID'))
+    goals = db.relationship('GameGoal', backref='goals', lazy='joined')
 
     def __init__(self, score, gameID, round, winngingTeamID, losingTeamID, seasonID):
         self.score = score
@@ -100,8 +101,8 @@ class Game(db.Model):
 class GameGoal(db.Model):
     __tablename__ = 'GameGoal'
 
-    gameID = db.Column('gameID', db.Integer, primary_key=True)
-    athleteID = db.Column('id', db.Integer)
+    gameID = db.Column('gameID', db.Integer, db.ForeignKey('game.gameID'), primary_key=True)
+    athleteID = db.Column('id', db.Integer, db.ForeignKey('athlete.id'), nullable=False)
 
     def __init__(self, gameID, athleteID):
         self.gameID = gameID
@@ -143,6 +144,7 @@ class Team(db.Model):
     assists = db.Column('assists', db.Integer)
     wins = db.Column('wins', db.Integer)
     losses = db.Column('losses', db.Integer)
+    players = db.relationship('Athlete', backref='players', lazy='joined')
 
     def __init__(self, name, teamID, location, dateCreated, goals, assists, wins, losses):
         self.name = name
