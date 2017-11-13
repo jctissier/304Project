@@ -3,7 +3,7 @@
 """
 Created on Fri Nov 10 16:45:01 2017
 
-@author: Familycomputer
+@author: Isaac
 """
 
 import pandas as pd
@@ -85,7 +85,7 @@ athletesIDs = random.sample(range(1, len(athletes) + 1), len(athletes))
 athletes['id'] = athletesIDs
 athletes['teamID'] = [clubs_of_interest[clubs_of_interest.index(athletes['Club'][i])] for i in athletes.index]
 athletes['countryID'] = [nationalities[nationalities.index(athletes['Nationality'][i])] for i in athletes.index]
-athletes['dob'] = [datetime.strptime(athletes['Birth_Date'][i], '%m/%d/%Y') for i in athletes.index]
+athletes['dob'] = [datetime.strptime(athletes['Birth_Date'][i], '%m/%d/%Y').date() for i in athletes.index]
 athletes['status'] = 'Active'
 athletes['goals'] = 0
 athletes['assists'] = 0
@@ -168,17 +168,6 @@ coaches['teamID'] = teams
 
 
 
-
-# self.id = id
-#         self.salary = salary
-#         self.name = name
-#         self.dob = dob
-#         self.status = status
-#         self.placeOfBirth = placeOfBirth
-#         self.countryID = countryID
-#         self.teamID = teamID
-# coaches =
-
 competition = pd.DataFrame()
 competition['name'] = ['UEFA Champions League', 'UEFA Champions League', 'FIFA World Cup', 'FIFA World Cup']
 competition['year'] = ['2016', '2017', '2014', '2018']
@@ -212,6 +201,7 @@ def generateCompetitiveMatches(teams, competition, num_games=20):
     teamLosses = np.zeros(len(teams))
     count = 0
     np.random.seed(17)
+    random.seed(17)
     for j in range(len(competition)):
         competitionHost = random.sample(nationalTeam['teamID'].tolist(), 1)[0]
         competitionID.append(competition['name'][j] + ' ' + competition['year'][j])
@@ -274,19 +264,21 @@ def generateCompetitiveMatches(teams, competition, num_games=20):
             if team1_goals > team2_goals:
                 winner = team1
                 loser = team2
-                athletes.loc[athletes['teamID'] == team1, 'wins'] += 1
-                athletes.loc[athletes['teamID'] == team2, 'losses'] += 1
-                team.loc[team['teamID'] == team1, 'wins'] += 1
-                team.loc[team['teamID'] == team2, 'losses'] += 1
             elif team2_goals >= team1_goals:
                 winner = team2
                 loser = team1
                 teamWins[teams.index(team2)] += 1
                 teamLosses[teams.index(team1)] += 1
-                athletes.loc[athletes['teamID'] == team1, 'losses'] += 1
-                athletes.loc[athletes['teamID'] == team2, 'wins'] += 1
-                team.loc[team['teamID'] == team1, 'losses'] += 1
-                team.loc[team['teamID'] == team2, 'wins'] += 1
+
+            team.loc[team['teamID'] == winner, 'wins'] += 1
+            team.loc[team['teamID'] == loser, 'losses'] += 1
+
+            if competition['type'][j] == 'club':
+                athletes.loc[athletes['teamID'] == loser, 'losses'] += 1
+                athletes.loc[athletes['teamID'] == winner, 'wins'] += 1
+            else:
+                athletes.loc[athletes['countryID'] == loser, 'losses'] += 1
+                athletes.loc[athletes['countryID'] == winner, 'wins'] += 1
 
             winners.append(winner)
             losers.append(loser)
@@ -352,9 +344,6 @@ competition = competition
 season = season
 
 from app.db.database import Athlete, Coach, Competition,GameGoal, Game, Season, Stadium, Team, db
-
-# engine = create_engine('sqlite:///cdb.db')
-# Base.metadata.create_all(engine)
 
 coach.to_sql(con=db.engine, name=Coach.__tablename__, if_exists='replace')
 athlete.to_sql(con=db.engine, name=Athlete.__tablename__, if_exists='replace')
