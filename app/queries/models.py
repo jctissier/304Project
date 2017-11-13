@@ -63,5 +63,19 @@ def select_coach_table(data):
     return json_data
 
 
+def select_groupby_table(data):
+    json_data = collections.OrderedDict({})
+    for i in data:
+        json_data.update({
+            i[0]:
+                [{
+                    'Team ID': i[1],
+                    'Number Players': i[2],
+                }]
+        })
+
+    return json_data
+
+
 """INSERT Query Helpers """
 
