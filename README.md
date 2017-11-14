@@ -1,4 +1,4 @@
-# Football Database Storage
+# :soccer: Football Stats Database :soccer:
 ## A CPSC304 project
 ### by Issac Ahouma, Edward Cai, Gary Gao, Jean-Claude Tissier
 
