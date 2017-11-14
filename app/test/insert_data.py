@@ -8,7 +8,7 @@ def insert(query_table):
         table = 'Athlete (Salary, Name, DOB, Status, placeOfBirth, countryID, goals, assists, wins, losses)'
         vals = 'VALUES (39843, "Robben", "1972-01-30", "Active", "HOL", "GER", 32, 98, 84, 1)'
     elif query_table == "Team":
-        table = 'Team (name, location, dateCreated, goals, assists, wins, losses)'
+        table = 'Team (teamID, location, dateCreated, goals, assists, wins, losses)'
         vals = 'VALUES ("Real Madrid", "Spain", "1940-01-01", 93843, 234, 1231, 333)'
     elif query_table == "Coach":
         table = 'Coach (salary, name, dob, status, placeOfBirth, countryID)'
@@ -20,4 +20,5 @@ def insert(query_table):
     db.engine.execute(sql)
 
 
-# insert("Coach")
+insert("Athlete")
+insert("Coach")
