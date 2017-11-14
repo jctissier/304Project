@@ -143,28 +143,40 @@ located in"""
 @gzipped
 def insert_query():
     """Athlete, Team or Coach"""
+    insert_table = request.form['table_name']
 
-    query_table = "Athlete"
+    if insert_table == "Athlete":
+        a_name = request.form['a_name']
+        a_status = request.form['a_status']
+    elif insert_table == "Team":
+        t_name = request.form['t_name']
+        t_loc = request.form['t_location']
 
-    if query_table == "Athlete":
+    if insert_table == "Athlete":
         table = 'Athlete (Salary, Name, DOB, Status, placeOfBirth, countryID, goals, assists, wins, losses)'
-        vals = 'VALUES (39843, "Robben", "1972-01-30", "Active", "HOL", "GER", 32, 98, 84, 1)'
-    elif query_table == "Team":
+        vals = 'VALUES (1000000, "' + a_name + '", "1970-01-05", "' + a_status + '", "CAN", "CAN", 15, 10, 10, 0)'
+    elif insert_table == "Team":
         table = 'Team (name, location, dateCreated, goals, assists, wins, losses)'
-        vals = 'VALUES ()'
-    elif query_table == "Coach":
-        table = 'Coach (salary, name, dob, status, placeOfBirth, countryID)'
-        vals = 'VALUES ()'
+        vals = 'VALUES ("' + t_name + '", "' + t_loc + '", "2018-01-01", 168, 153, 55, 20)'
     else:
         return jsonify({'error': "Invalid Table Name"})
 
     sql = text('''INSERT INTO ''' + table + vals)
     db.engine.execute(sql)                                      # Runs the SQL INSERT
 
+    if insert_table == "Athlete":
+        row = db.session.query(Athlete).order_by(Athlete.id.desc()).limit(5).all()
+        last_vals = [[r.id, r.salary, r.name, r.dob, r.status, r.placeOfBirth, r.countryID, r.goals, r.assists, r.wins, r.losses]
+                     for r in row]
+    elif insert_table == "Team":
+        row = db.session.query(Team).order_by(Team.teamID.desc()).limit(5).all()
+        last_vals = [[r.teamID, r.name, r.location, r.dateCreated, r.goals, r.assists, r.wins, r.losses] for r in row]
+
     return jsonify({
         'query_type': 'INSERT',
-        'table': query_table,
-        'Code': 200
+        'table': insert_table,
+        'Code': 200,
+        'last_5_rows': last_vals
     })
 
 
