@@ -136,7 +136,7 @@ class Stadium(db.Model):
 class Team(db.Model):
     __tablename__ = 'Team'
 
-    name = db.Column('name', db.String(100))
+    # name = db.Column('name', db.String(100))
     teamID = db.Column('teamID', db.Integer, primary_key=True)
     location = db.Column('location', db.String(100))
     dateCreated = db.Column('dateCreated', db.Date)
@@ -146,8 +146,8 @@ class Team(db.Model):
     losses = db.Column('losses', db.Integer)
     players = db.relationship('Athlete', backref='players', lazy='joined')
 
-    def __init__(self, name, teamID, location, dateCreated, goals, assists, wins, losses):
-        self.name = name
+    def __init__(self, teamID, location, dateCreated, goals, assists, wins, losses):
+        # self.name = name
         self.teamID = teamID
         self.location = location
         self.dateCreated = dateCreated
