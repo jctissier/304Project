@@ -12,7 +12,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 SQLALCHEMY_DATABASE_URI = 'sqlite://///' + os.path.join(basedir, 'projectDB.sqlite3')
 
 # WINDOWS
-#SQLALCHEMY_DATABASE_URI = 'sqlite:///C:\\Users\\edwar\\Documents\\cpsc304\\304Project\\testFootball.sqlite3'
+#SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'testFootball.sqlite3')
 
 # TestDB
 
