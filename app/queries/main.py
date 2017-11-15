@@ -45,7 +45,7 @@ def select_athlete():
         """
         json_data = helper.select_athlete_table(data=a_data)
     elif select_table == "Team":                            # Query Team table
-        a_sql = text('''SELECT Team.TeamID, Team.name, Team.location, Team.dateCreated, Team.goals,
+        a_sql = text('''SELECT Team.TeamID, Team.location, Team.dateCreated, Team.goals,
                         Team.assists, Team.wins, Team.losses
                         FROM Team''')
         data = db.engine.execute(a_sql)
