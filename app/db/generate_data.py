@@ -19,14 +19,14 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 
-stadiums = pd.read_csv('stadiums.csv')
+stadiums = pd.read_csv('dataSeed/stadiums.csv')
 locations = [stadiums['City'][i].strip() + ', ' + stadiums['Country'][i].strip() for i in range(len(stadiums))]
 stadiums['Team'] = stadiums['Team'].apply(lambda x: x.strip())
 stadiums['Location'] = locations
 stadiums_filtered = stadiums[['Stadium', 'Location']]
 stadiums_filtered.columns = ['name', 'location']
-countriesPopulation = pd.read_csv('countriesPopulation.csv')
-playersData = pd.read_csv('players.csv')
+countriesPopulation = pd.read_csv('dataSeed/countriesPopulation.csv')
+playersData = pd.read_csv('dataSeed/players.csv')
 players = playersData
 
 
@@ -151,8 +151,8 @@ def strTimeProp(start, end, format, prop):
 def randomDate(start, end, prop):
     return strTimeProp(start, end, '%m/%d/%Y', prop)
 
-
-coaches_dob = [randomDate("1/1/1960", "1/1/1975", random.random()) for i in range(len(coaches_of_interest))]
+#   Range below 1970 throws error with Windows when running script
+coaches_dob = [randomDate("1/1/1971", "1/1/1980", random.random()) for i in range(len(coaches_of_interest))]
 teams = clubs_of_interest + nationalities
 coaches = pd.DataFrame()
 coachIDs = random.sample(range(len(athletes) + 1, len(athletes) + len(coaches_of_interest) + 1),

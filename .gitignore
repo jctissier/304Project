@@ -102,3 +102,13 @@ ENV/
 
 #IDE config files
 .idea/
+
+#Generated data, should generate each time
+Athlete.csv
+Coach.csv
+Competition.csv
+Game.csv
+GameGoal.csv
+Season.csv
+Stadium.csv
+Team.csv
