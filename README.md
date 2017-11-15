@@ -3,7 +3,8 @@
 ### by Issac Ahouma, Edward Cai, Gary Gao, Jean-Claude Tissier
 
 ### Requirements
-- Python3
+- Python 3.5 and later
+- Windows: Microsoft Visual C++ Build Tools
 - pip install -r requirements.txt
 
 ### Steps to run
