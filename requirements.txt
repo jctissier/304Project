@@ -14,7 +14,8 @@ requests==2.13.0
 six==1.10.0
 update-checker==0.16
 Werkzeug==0.11.15
-lxml==3.6.0
+#libxml2
+#lxml==3.6.0
 urllib3==1.21.1
 APScheduler==3.0.0
 sqlalchemy
