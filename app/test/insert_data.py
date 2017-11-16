@@ -29,8 +29,14 @@ def get_table_columns():                    # Gets the names of each Table's col
 
 
 def delete_data():
-    key_name = "Allianz Arena"
+    # TODO - Show count to show that it was deleted - remove table and re-render
+    # TODO - show deletes for first 3 - easiest way to show
+    key_name = "Allianz Arena "
     key_location = "Munich, Germany"
+
+    # key_name = "Allianz Riviera "
+    # key_location = "Nice, France"
+
     sql = text('''DELETE FROM Stadium WHERE name = "''' + key_name + '''" AND location = "''' + key_location + '"')
     db.engine.execute(sql)
 
@@ -38,8 +44,8 @@ def delete_data():
     for r in row:
         print(r)
 
-
 # delete_data()             # Uncomment to run function
+
 
 def update_data():
     main_pk = 238           # Lionel Messi = 238 id
@@ -48,6 +54,21 @@ def update_data():
     db.engine.execute(sql)
 
     lionel_update = db.session.query(Athlete).get(main_pk)
-    print(lionel_update)
+    print(lionel_update.salary)
 
 # update_data()             # Uncomment to run function
+
+
+# print(db.session.query(Team).order_by(Team.teamID.desc()).all())
+# print(db.session.query(Athlete).order_by(Athlete.id.desc()).first())
+# print(db.session.query(Team).order_by(Team.teamID.desc()).limit(5).all())
+
+
+def get_any_table(t_name):
+    sql = text('''SELECT * FROM ''' + t_name)  # shouldnt be a string
+    rows = db.engine.execute(sql)
+    data = [list(row) for row in rows]
+
+    print(data)
+
+get_any_table("Team")

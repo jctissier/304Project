@@ -67,12 +67,13 @@ def select_coach_table(data):
 
 def select_groupby_table(data):
     json_data = collections.OrderedDict({})
-    for i in data:
+
+    for num, i in enumerate(data):
         json_data.update({
-            i[0]:
+            num:
                 [{
-                    'Team ID': i[1],
-                    'Number Players': i[2],
+                    'Team ID': i[0],
+                    'Number Players': i[1]
                 }]
         })
 

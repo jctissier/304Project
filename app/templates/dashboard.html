@@ -254,9 +254,14 @@
                                                                 Select Query Options <b class="caret"></b>
                                                             </a>
                                                             <ul class="dropdown-menu" style="left:50%;right:auto;transform:translate(-50%,0);">
-                                                                <li><a onclick="select_queries('Athlete', this.id)" id="select_options_athlete">Athlete Table</a></li>
-                                                                <li><a onclick="select_queries('Team', this.id)" id="select_options_team">Team Table</a></li>
-                                                                <li><a onclick="select_queries('Coach', this.id)" id="select_options_coach">Coach Table</a></li>
+                                                                <li><a onclick="view_tables('athlete')">Athlete Table</a></li>
+                                                                <li><a onclick="view_tables('team')">Team Table</a></li>
+                                                                <li><a onclick="view_tables('coach')">Coach Table</a></li>
+                                                                <li><a onclick="view_tables('competition')">Competition Table</a></li>
+                                                                <li><a onclick="view_tables('game')">Game Table</a></li>
+                                                                <li><a onclick="view_tables('gamegoal')">GameGoal Table</a></li>
+                                                                <li><a onclick="view_tables('season')">Season Table</a></li>
+                                                                <li><a onclick="view_tables('stadium')">Stadium Table</a></li>
                                                             </ul>
                                                         </div>
                                                     </div>
@@ -265,16 +270,20 @@
 
                                                 <div class="divider"></div>
 
-                                                <div id="select-content" style="display: none;">
-                                                    <pre style="padding-top:15px;background: #2b2b2b;" id="select_query_athlete"><code class="sql hljs">SELECT aId, aName, countryID, dob, placeOfBirth, salary, aStatus, goals, assists, wins, losses FROM Athlete</code></pre>
-                                                    <pre style="padding-top:15px;background: #2b2b2b;" id="select_query_team"><code class="sql hljs">SELECT teamID, location, dateCreated, goals, assists, wins, losses FROM Team</code></pre>
-                                                    <pre style="padding-top:15px;background: #2b2b2b;" id="select_query_coach"><code class="sql hljs">SELECT cId, aName, salary, dob, astatus, placeOfBirth, countryID FROM Coach</code></pre>
-                                                    <div class="row" style="text-align: center;" id="select-json-btn">
+                                                <div id="select-content">
+                                                   <div class="row" style="text-align: center;" id="select-json-btn">
                                                         <button class="btn btn-success btn-sm" style="margin-bottom:20px;padding-top:8px;background-color: #22aba6;" data-toggle="modal" data-target="#response-modal">Show JSON Query Response</button>
                                                     </div>
 
                                                     <div class="card-content table-responsive table-full-width" style="padding: 30px;">
-                                                        <table class="table" id="select_table_insertion"></table>
+                                                        <table class="table">
+                                                            <thead id="db_table_insertion_headers" class="text-danger">
+                                                                <!-- Dynamically inserted headers -->
+                                                            </thead>
+                                                            <tbody id="db_table_insertion_body">
+                                                                <!-- Dynamically inserted body -->
+                                                            </tbody>
+                                                        </table>
                                                     </div>
                                                 </div>
                                             </div>
@@ -331,9 +340,6 @@
                                                                 <button class="btn btn-success btn-sm" style="margin-bottom:10px;padding-top:8px;background-color: #22aba6;" onclick="insert_queries('Athlete')">Run Query</button>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-12">
-                                                            <pre style="padding-top:15px;background: #2b2b2b;" id="insert_query_athlete_demo"><code class="sql hljs"><span class="hljs-keyword">INSERT INTO </span>Athlete (salary, aName, dob, aStatus, placeOfBirth, countryID, goals, assists, wins, losses) &#10;<span class="hljs-keyword">VALUES </span>(1000000, "choose_name", "1970-01-05", "choose_status", "CAN", "CAN", 15, 10, 10, 0)</code></pre>
-                                                        </div>
                                                     </div>
                                                     <!-- Team Options -->
                                                     <div class="row" id="insert-team-options" style="display: none;">
@@ -367,9 +373,6 @@
                                                                 <button class="btn btn-success btn-sm" style="margin-bottom:10px;padding-top:8px;background-color: #22aba6;" onclick="insert_queries('Team')">Run Query</button>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-12">
-                                                            <pre style="padding-top:15px;background: #2b2b2b;" id="insert_query_team_demo"><code class="sql hljs"><span class="hljs-keyword">INSERT INTO </span>Team (teamID, location, dateCreated, goals, assists, wins, losses) &#10;<span class="hljs-keyword">VALUES </span>("choose_name", "choose_location", "2018-01-01", 168, 153, 55, 20)</code></pre>
-                                                        </div>
                                                     </div>
                                                 </div>
 
@@ -377,8 +380,6 @@
 
                                                 <div id="insert-content">
                                                     <div id="insert-athlete-content" style="display: none;">
-                                                        <pre style="padding-top:15px;background: #2b2b2b;" id="insert_query_athlete"><code class="sql hljs"><span class="hljs-keyword">INSERT INTO </span>Athlete (salary, aName, dob, aStatus, placeOfBirth, countryID, goals, assists, wins, losses) &#10;<span class="hljs-keyword">VALUES </span><span id="insert-athlete-vals"></span></code></pre>
-
                                                         <div class="row" style="text-align: center;" id="select-json-btn">
                                                             <button class="btn btn-success btn-sm" style="margin-bottom:20px;padding-top:8px;background-color: #22aba6;" data-toggle="modal" data-target="#response-modal">Show JSON Query Response</button>
                                                         </div>
@@ -387,8 +388,6 @@
                                                         </div>
                                                     </div>
                                                     <div id="insert-team-content"style="display: none;">
-                                                        <pre style="padding-top:15px;background: #2b2b2b;" id="insert_query_team"><code class="sql hljs"><span class="hljs-keyword">INSERT INTO </span>Team (tName, location, dateCreated, goals, assists, wins, losses) &#10;<span class="hljs-keyword">VALUES </span><span id="insert-team-vals"></span></code></pre>
-
                                                         <div class="row" style="text-align: center;" id="select-json-btn">
                                                             <button class="btn btn-success btn-sm" style="margin-bottom:20px;padding-top:8px;background-color: #22aba6;" data-toggle="modal" data-target="#response-modal">Show JSON Query Response</button>
                                                         </div>
@@ -441,9 +440,6 @@
                                                                 <button class="btn btn-success btn-sm" style="margin-bottom:10px;padding-top:8px;background-color: #22aba6;" onclick="delete_queries('Stadium')">Run Query</button>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-12">
-                                                            <pre style="padding-top:15px;background: #2b2b2b;" id="delete_query_stadium_demo"><code class="sql hljs"><span class="hljs-keyword">DELETE FROM </span>Stadium  &#10;<span class="hljs-keyword">WHERE </span>(sName="choose_name" <span class="hljs-keyword">AND </span> location="choose_location")</code></pre>
-                                                        </div>
                                                     </div>
                                                     <!-- Team Options -->
                                                     <div class="row" id="delete-team-options" style="display: none;">
@@ -464,9 +460,6 @@
                                                                 <button class="btn btn-success btn-sm" style="margin-bottom:10px;padding-top:8px;background-color: #22aba6;" onclick="delete_queries('Team')">Run Query</button>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-12">
-                                                            <pre style="padding-top:15px;background: #2b2b2b;" id="delete_query_team_demo"><code class="sql hljs"><span class="hljs-keyword">DELETE FROM </span>Team  &#10;<span class="hljs-keyword">WHERE </span>(teamID="choose_teamID")</code></pre>
-                                                        </div>
                                                     </div>
                                                 </div>
 
@@ -474,8 +467,6 @@
 
                                                 <div id="delete-content">
                                                     <div id="delete-stadium-content" style="display: none;">
-                                                        <pre style="padding-top:15px;background: #2b2b2b;" id="delete_query_stadium"><code class="sql hljs"><span class="hljs-keyword">DELETE FROM </span>Stadium &#10;<span class="hljs-keyword">WHERE </span><span id="delete-stadium-vals"></span></code></pre>
-
                                                         <div class="row" style="text-align: center;" id="select-json-btn">
                                                             <button class="btn btn-success btn-sm" style="margin-bottom:20px;padding-top:8px;background-color: #22aba6;" data-toggle="modal" data-target="#response-modal">Show JSON Query Response</button>
                                                         </div>
@@ -484,8 +475,6 @@
                                                         </div>
                                                     </div>
                                                     <div id="delete-team-content"style="display: none;">
-                                                        <pre style="padding-top:15px;background: #2b2b2b;" id="delete_query_team"><code class="sql hljs"><span class="hljs-keyword">DELETE FROM </span>Team &#10;<span class="hljs-keyword">WHERE </span><span id="delete-team-vals"></span></code></pre>
-
                                                         <div class="row" style="text-align: center;" id="select-json-btn">
                                                             <button class="btn btn-success btn-sm" style="margin-bottom:20px;padding-top:8px;background-color: #22aba6;" data-toggle="modal" data-target="#response-modal">Show JSON Query Response</button>
                                                         </div>

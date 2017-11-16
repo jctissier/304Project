@@ -110,6 +110,60 @@ function map_to_functions(tName, el_id){
 
 
 /**
+ * View DB Tables
+ */
+function view_tables(tname){
+    $.ajax({
+        type: 'GET',
+        url: '/db_tables',
+        data: {
+            table_name: tname
+        }
+    })
+            .done(function (response) {
+                demo.showNotification("Viewing all rows in DB Table: " + tname, "danger");
+                $('#response-json').text(JSON.stringify(response.entries, undefined, 4));
+                $('#db_table_insertion_headers').html(db_table_headers(response.headers));
+                $('#db_table_insertion_body').html(db_table_vars(response.entries));
+            });
+}
+
+function db_table_vars(jsonData, tname){
+    var tbody = '';
+    for (var key in jsonData) {
+        if (jsonData.hasOwnProperty(key)) {
+            tbody += '<tr>';
+
+            for (var i=0; i<jsonData[key].length; i++){
+                tbody += '<td>' + jsonData[key][i] + '</td>';
+            }
+            tbody += '<tr>';
+        }
+    }
+    print(tbody);
+    return tbody + '</tr>';
+}
+
+function get_db_table_keys(jsonData, loop){
+    var a_html = "";
+    for (var k=0; k<a_keys.length; k++){
+        a_html += '<td>' + jsonData[loop][0][a_keys[k]] + '</td>';
+    }
+    return a_html;
+}
+
+function db_table_headers(jsonData) {
+    var headers = '<tr>';
+    for (var key in jsonData){
+        headers += '<th>' + jsonData[key] + '</th>';
+    }
+
+    return headers + '</tr>';
+}
+
+
+
+/**
  * SELECT queries
  */
 
@@ -118,12 +172,6 @@ function hide_select(){
     $('#select_query_athlete').hide();
     $('#select_query_coach').hide();
     $('#select_query_team').hide();
-}
-
-function show_select_sql_code(tname){
-    if (isEqual(tname,"Athlete")){$('#select_query_athlete').show();}
-    else if (isEqual(tname, "Team")){$('#select_query_team').show();}
-    else if (isEqual(tname, "Coach")){$('#select_query_coach').show();}
 }
 
 function select_queries(tname){
@@ -138,7 +186,6 @@ function select_queries(tname){
             .done(function (response) {
                 demo.showNotification("SELECT query completed", "danger");
                 $('#select-content').show();
-                show_select_sql_code(tname);
                 $('#response-json').text(JSON.stringify(response.entries, undefined, 4));
                 $('#select_table_insertion').html(select_table_vars(response, tname));
             });
@@ -257,35 +304,6 @@ function hide_insert(tname){
     }
 }
 
-function show_insert_sql_code(tname){
-    if (isEqual(tname, "Athlete")){
-        $('#insert-athlete-vals').html('(<span class="hljs-number">1000000</span>, ' +
-            '<span class="hljs-string"> "' + insert_aName + '"</span>, ' +
-            '<span class="hljs-string">"1970-01-05"</span>, ' +
-            '<span class="hljs-string">"' + insert_aStatus + "</span>, " +
-            '<span class="hljs-string">"CAN"</span>, ' +
-            '<span class="hljs-string">"CAN"</span>, ' +
-            '<span class="hljs-number">15</span>, ' +
-            '<span class="hljs-number">10</span>, ' +
-            '<span class="hljs-number">10</span>, ' +
-            '<span class="hljs-number">0</span>)'
-        );
-        $('#insert_query_athlete').show();
-    }
-    else if (isEqual(tname, "Team")){
-        $('#insert-team-vals').html(
-            '<span class="hljs-string"> "' + insert_tName + '"</span>, ' +
-            '<span class="hljs-string">"' + insert_tLocation + "</span>, " +
-            '<span class="hljs-string">"2018-01-01"</span>, ' +
-            '<span class="hljs-number">168</span>, ' +
-            '<span class="hljs-number">153</span>, ' +
-            '<span class="hljs-number">55</span>, ' +
-            '<span class="hljs-number">20</span>)'
-        );
-        $('#insert_query_team').show();
-    }
-}
-
 function check_dropdown_vals_insert(tname){
     if (isEqual(tname, "Athlete")){
         if (isEqual(insert_aName, "")){
@@ -331,7 +349,6 @@ function insert_queries(tname){
             .done(function (response) {
                 demo.showNotification("INSERT query completed", "danger");
                 $('#insert-content').show();
-                show_insert_sql_code(tname);
                 $('#response-json').text(JSON.stringify(response, undefined, 4));
                 if (isEqual(tname, "Athlete")){
                     $('#insert_table_insertion_athlete').html(insert_table_vars(response.last_5_rows, tname));
@@ -391,7 +408,6 @@ function get_insert_table_headers(tname){
     }
     else if (isEqual(tname, "Team")){
         return '<thead class="text-danger">' +
-                    '<th>ID</th>' +
                     '<th>Team ID</th>' +
                     '<th>Location</th>' +
                     '<th>Date Created</th>' +
@@ -476,29 +492,28 @@ function delete_queries(tname){
 
         hide_delete(tname);           // todo
 
-        // $.ajax({
-        //     type: 'POST',
-        //     url: '/delete_query',
-        //     data: {
-        //         table_name: tname,
-        //         s_name: delete_sName,
-        //         s_location: delete_sLocation,
-        //         t_name: delete_teamID
-        //     }
-        // })
-        //     .done(function (response) {
-        //         demo.showNotification("DELETE query completed", "danger");
-        //         $('#delete-content').show();
-        //         show_delete_sql_code(tname);
-        //         $('#response-json').text(JSON.stringify(response, undefined, 4));
-        //         if (isEqual(tname, "Stadium")){
-        //             $('#delete_table_insertion_stadium').html(delete_table_vars(response.last_5_rows, tname));
-        //         }
-        //         else{
-        //             $('#delete_table_insertion_team').html(delete_table_vars(response.last_5_rows, tname));
-        //         }
-        //
-        //     });
+        $.ajax({
+            type: 'POST',
+            url: '/delete_query',
+            data: {
+                table_name: tname,
+                s_name: delete_sName,
+                s_location: delete_sLocation,
+                t_name: delete_teamID
+            }
+        })
+            .done(function (response) {
+                demo.showNotification("DELETE query completed", "danger");
+                $('#delete-content').show();
+                $('#response-json').text(JSON.stringify(response, undefined, 4));
+                if (isEqual(tname, "Stadium")){
+                    $('#delete_table_insertion_stadium').html(delete_table_vars(response.last_5_rows, tname));
+                }
+                else{
+                    $('#delete_table_insertion_team').html(delete_table_vars(response.last_5_rows, tname));
+                }
+
+            });
     }
 }
 
@@ -542,22 +557,5 @@ function hide_delete(tname){
     else if (isEqual(tname, "Team")){
         $('#delete_query_team_demo').hide();
         $('#delete-team-content').show();
-    }
-}
-
-function show_delete_sql_code(tname){
-    if (isEqual(tname, "Stadium")){
-        $('#delete-stadium-vals').html('(' +
-            'sName=<span class="hljs-string">"' + delete_sName.replace('-', ' ') + '"</span>' +
-            '<span class="hljs-keyword"> AND </span>' +
-            'location=<span class="hljs-string">"' + delete_sLocation + '"</span>)'
-        );
-        $('#delete_query_stadium').show();
-    }
-    else if (isEqual(tname, "Team")){
-        $('#delete-team-vals').html(
-            '(teamID=<span class="hljs-string">"' + delete_teamID + '"</span>)'
-        );
-        $('#delete_query_team').show();
     }
 }

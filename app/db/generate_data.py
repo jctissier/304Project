@@ -19,6 +19,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 
+
+
 stadiums = pd.read_csv('dataSeed/stadiums.csv')
 locations = [stadiums['City'][i].strip() + ', ' + stadiums['Country'][i].strip() for i in range(len(stadiums))]
 stadiums['Team'] = stadiums['Team'].apply(lambda x: x.strip())
@@ -59,7 +61,7 @@ countries['activePlayerCount'] = np.zeros(len(nationalities))
 nationalTeam = pd.DataFrame()
 nationalTeam['teamID'] = nationalities
 nationalTeam['location'] = nationalities
-nationalTeam['dateCreated'] = 'N/A'
+nationalTeam['dateCreated'] = '1900-01-01'
 nationalTeam['goals'] = 0
 nationalTeam['assists'] = 0
 nationalTeam['wins'] = 0
@@ -107,7 +109,7 @@ atheletes = athletes.head(15)
 clubs = pd.DataFrame()
 clubs['teamID'] = clubs_of_interest
 clubs['location'] = club_locations
-clubs['dateCreated'] = date_created
+clubs['dateCreated'] = [str(date) + "-01-01" for date in date_created]
 clubs['goals'] = 0
 clubs['assists'] = 0
 clubs['wins'] = 0
@@ -320,8 +322,6 @@ competitiveMatches = matches[
 gameInfo = matches[['gameID', 'score', 'location', 'seasonID']]
 
 
-
-
 coaches.to_csv('Coach.csv')
 athletes.to_csv('Athlete.csv')
 season.to_csv('Season.csv')
@@ -354,3 +354,4 @@ gameGoal.to_sql(con=db.engine, name=GameGoal.__tablename__, if_exists='replace')
 competition.to_sql(con=db.engine, name=Competition.__tablename__, if_exists='replace')
 season.to_sql(con=db.engine, name=Season.__tablename__, if_exists='replace')
 
+print("Done Generating Data\n")

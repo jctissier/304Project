@@ -13,7 +13,7 @@ db = SQLAlchemy(app)
 
 class Athlete(db.Model):
     """
-    Create database table to store Athlete table data
+    Create database table to store Athlete table  data
     """
     __tablename__ = 'Athlete'
 
@@ -87,7 +87,6 @@ class Game(db.Model):
     losingTeamID = db.Column('losingTeamID', db.Integer, db.ForeignKey('team.teamID'))
     competitionID = db.Column('competitionID', db.Integer, db.ForeignKey('competition.name'))
     seasonID = db.Column('stadiumID', db.Integer, db.ForeignKey('season.seasonID'))
-    goals = db.relationship('GameGoal', backref='goals', lazy='joined')
 
     def __init__(self, score, gameID, round, winngingTeamID, losingTeamID, seasonID):
         self.score = score
@@ -136,7 +135,6 @@ class Stadium(db.Model):
 class Team(db.Model):
     __tablename__ = 'Team'
 
-    # name = db.Column('name', db.String(100))
     teamID = db.Column('teamID', db.Integer, primary_key=True)
     location = db.Column('location', db.String(100))
     dateCreated = db.Column('dateCreated', db.Date)
@@ -144,10 +142,8 @@ class Team(db.Model):
     assists = db.Column('assists', db.Integer)
     wins = db.Column('wins', db.Integer)
     losses = db.Column('losses', db.Integer)
-    players = db.relationship('Athlete', backref='players', lazy='joined')
 
     def __init__(self, teamID, location, dateCreated, goals, assists, wins, losses):
-        # self.name = name
         self.teamID = teamID
         self.location = location
         self.dateCreated = dateCreated
