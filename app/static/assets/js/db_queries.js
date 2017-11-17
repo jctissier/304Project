@@ -140,16 +140,8 @@ function db_table_vars(jsonData, tname){
             tbody += '<tr>';
         }
     }
-    print(tbody);
-    return tbody + '</tr>';
-}
 
-function get_db_table_keys(jsonData, loop){
-    var a_html = "";
-    for (var k=0; k<a_keys.length; k++){
-        a_html += '<td>' + jsonData[loop][0][a_keys[k]] + '</td>';
-    }
-    return a_html;
+    return tbody + '</tr>';
 }
 
 function db_table_headers(jsonData) {

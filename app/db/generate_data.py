@@ -317,8 +317,7 @@ def most_common(lst):
 competition['winner'] = [most_common(matches[matches['competitionID'] == edition]['winningTeamID'].tolist()) for edition
                          in competition['competitionID']]
 
-competitiveMatches = matches[
-    ['gameID', 'teamID1', 'teamID2', 'winningTeamID', 'losingTeamID', 'competitionID', 'seasonID', 'score']]
+competitiveMatches = matches[['score', 'gameID', 'competitionID', 'winningTeamID', 'losingTeamID', 'seasonID']]
 gameInfo = matches[['gameID', 'score', 'location', 'seasonID']]
 
 

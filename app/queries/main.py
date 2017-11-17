@@ -49,10 +49,15 @@ def get_tables():
     if table_name in available_tables:
         sql = text('''SELECT * FROM ''' + table_name)  # shouldnt be a string
         rows = db.engine.execute(sql)
-        data = [list(row[1:]) for row in rows]
-        print(data)
+        if table_name == "game":
+            data = []
+            for r in rows:
+                data.append([r[6], r[9], r[3], r[4], r[5], r[7]])
+        else:
+            data = [list(row[1:]) for row in rows]
         headers = tables_map[table_name]
         print(headers)
+        print(data)
 
         return jsonify({'code': 200, 'table': table_name, 'entries': data, 'headers': headers})
 
