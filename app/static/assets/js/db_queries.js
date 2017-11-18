@@ -271,10 +271,10 @@ function insert_queries(tname){
                 $('#insert-content').show();
                 $('#response-json').text(JSON.stringify(response, undefined, 4));
                 if (isEqual(tname, "Athlete")){
-                    $('#insert_table_insertion_athlete').html(insert_table_vars(response.last_5_rows, tname));
+                    $('#insert_table_insertion_athlete').html(insert_table_vars(response.entries, tname));
                 }
                 else{
-                    $('#insert_table_insertion_team').html(insert_table_vars(response.last_5_rows, tname));
+                    $('#insert_table_insertion_team').html(insert_table_vars(response.entries, tname));
                 }
 
             });
@@ -427,10 +427,10 @@ function delete_queries(tname){
                 $('#delete-content').show();
                 $('#response-json').text(JSON.stringify(response, undefined, 4));
                 if (isEqual(tname, "Stadium")){
-                    $('#delete_table_insertion_stadium').html(delete_table_vars(response.data, tname));
+                    $('#delete_table_insertion_stadium').html(delete_table_vars(response.entries, tname));
                 }
                 else{
-                    $('#delete_table_insertion_team').html(delete_table_vars(response.data, tname));
+                    $('#delete_table_insertion_team').html(delete_table_vars(response.entries, tname));
                 }
 
             });
@@ -522,4 +522,69 @@ function get_groupby_table_headers(){
                 '<th>Team ID</th>' +
                 '<th>Number of Players</th>' +
             '</thead>';
+}
+
+
+/**
+ * JOIN Query
+ */
+
+function join_query(num){
+    $.ajax({
+            type: 'GET',
+            url: '/join_query',
+            data: {
+                qry: num
+            }
+        })
+            .done(function (response) {
+                demo.showNotification("GROUP BY query completed", "danger");
+                $('#join-content').show();
+                $('#response-json').text(JSON.stringify(response, undefined, 4));
+                $('#join_table_insertion_headers').html(get_join_table_headers(num));
+                $('#join_table_insertion_body').html(join_table_vars(response.entries));
+
+            });
+}
+
+function join_table_vars(jsonData, num){
+    var html = '';
+    for (var key in jsonData) {
+        if (jsonData.hasOwnProperty(key)) {
+            html += '<tr>';
+            for (var i = 0; i < jsonData[key].length; i++) {
+                html += '<td>' + jsonData[key][i] + '</td>';
+            }
+            html += '<tr>';
+        }
+    }
+
+    return html;
+}
+
+function get_join_table_headers(num){
+    if (num === 1) {
+        return  '<tr>' +
+                    '<th>Team ID</th>' +
+                    '<th>Team Location</th>' +
+                    '<th>Date Created</th>' +
+                '</tr>';
+
+    }
+    else if (num === 2) {
+        return '<tr>' +
+                    '<th>Athlete Name</th>' +
+                    '<th>Athlete Team ID</th>' +
+                    '<th>Athlete Status</th>' +
+                    '<th>Athlete Salary</th>' +
+                '</tr>';
+    }
+    else if (num === 3) {
+        return '<tr>' +
+                    '<th>Athlete Name</th>' +
+                    '<th>Athlete Team ID</th>' +
+                    '<th>Athlete Status</th>' +
+                    '<th>Athlete Salary</th>' +
+                '</tr>';
+    }
 }

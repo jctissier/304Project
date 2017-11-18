@@ -404,7 +404,43 @@
                                             </div>
 
                                             <div class="tab-pane" id="join_tab">
-                                                Fifth Tab
+                                                <div class="row" style="margin-bottom: 15px;">
+                                                    <div class="col-md-4" style="text-align: center;">
+                                                        <div class="row" style="text-align: center;">
+                                                            <button class="btn btn-success btn-med" style="margin-bottom:10px;background-color: #22aba6;" onclick="join_query(1)"><span>Join 2 Tables</span><br></button>
+                                                        </div>
+                                                        <span style="text-transform: initial;font-size:larger;">Find all the teams that play in the Champions League 2017 that have scored at least 5 goals</span>
+                                                    </div>
+                                                    <div class="col-md-4" style="text-align: center;">
+                                                        <div class="row" style="text-align: center;">
+                                                            <button class="btn btn-success btn-med" style="margin-bottom:10px;background-color: #22aba6;" onclick="join_query(2)"><span>Join 2 Tables</span><br></button>
+                                                        </div>
+                                                        <span style="text-transform: initial;font-size:larger;">Find all the players who have scored at least 10 goals and won a trophy in Europe</span>
+                                                    </div>
+                                                    <div class="col-md-4" style="text-align: center;">
+                                                        <div class="row" style="text-align: center;">
+                                                            <button class="btn btn-success btn-med" style="margin-bottom:10px;background-color: #22aba6;" onclick="join_query(3)"><span>Join 3 Tables</span></button>
+                                                        </div>
+                                                        <span style="text-transform: initial;font-size:larger;">Finds all players from Brazil who scored at least one goal in a game played in Europe and in 2017</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="divider"></div>
+
+                                                <div id="join-content" style="display: none;">
+                                                    <div>
+                                                        <div class="row" style="text-align: center;" id="select-json-btn">
+                                                            <button class="btn btn-success btn-sm" style="margin-bottom:20px;padding-top:8px;background-color: #22aba6;" data-toggle="modal" data-target="#response-modal">Show JSON Query Response</button>
+                                                        </div>
+                                                        <div class="card-content table-responsive table-full-width" style="padding: 30px;">
+                                                            <table class="table">
+                                                                <thead id="join_table_insertion_headers" class="text-danger"></thead>
+                                                                <tbody id="join_table_insertion_body"></tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                             </div>
 
                                             <!-- GROUP BY QUERY -->

@@ -27,7 +27,6 @@ def load():
 
 @queries.route('/db_tables', methods=['GET'])
 def get_tables():
-    # TODO - fix database data
     """
     Gets all the rows for a table in the DB
     :return: JSON string containing all the rows in a particular table
@@ -141,10 +140,10 @@ def insert_query():
         last_vals = [[r.teamID, r.location, r.dateCreated, r.goals, r.assists, r.wins, r.losses] for r in row]
 
     return jsonify({
+        'code': 200,
         'query_type': 'INSERT',
         'table': insert_table,
-        'Code': 200,
-        'last_5_rows': last_vals
+        'entries': last_vals
     })
 
 
@@ -182,15 +181,14 @@ def delete_query():
         last_vals = [[r.teamID, r.location, r.dateCreated, r.goals, r.assists, r.wins, r.losses] for r in row]
 
     return jsonify({
+        'code': 200,
         'query_type': 'DELETE',
         'table': delete_table,
-        'Code': 200,
-        'data': last_vals
+        'entries': last_vals
     })
 
 
 """ UPDATE QUERIES """
-# TODO - update queries + joins + Create View
 
 
 @queries.route('/update_player_stats', methods=['GET', 'POST'])
@@ -236,6 +234,9 @@ def update_player_country():
     })
 
 
+""" GROUP BY QUERIES """
+
+
 @queries.route('/groupby_query', methods=['GET'])
 @gzipped
 def groupby_query():
@@ -250,7 +251,38 @@ def groupby_query():
     json_data = helper.select_groupby_table(data=a_data)
 
     return jsonify({
-        'Code': 200,
-        'Table': 'Team',
+        'code': 200,
+        'query_type': 'GROUP BY',
+        'table': 'Team',
         'entries': json_data
     })
+
+
+""" JOIN QUERIES """
+
+
+@queries.route('/join_query', methods=['GET'])
+@gzipped
+def join_query():
+    sql = ''
+    qry_num = int(request.args.get('qry'))
+
+    if qry_num == 1:
+        sql = helper.join_2_query1()
+    elif qry_num == 2:
+        sql = helper.join_2_query2()
+    elif qry_num == 3:
+        sql = helper.join_3_query()
+
+    data = db.engine.execute(sql)
+    json_data = [list(row) for row in data]
+
+    return jsonify({
+        'code': 200,
+        'query_type': 'JOIN',
+        'entries': json_data
+    })
+
+
+""" CREATE VIEW QUERY """
+

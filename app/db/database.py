@@ -88,7 +88,6 @@ class Game(db.Model):
 
     score = db.Column('score', db.String(100))
     gameID = db.Column('gameID', db.Integer, primary_key=True)
-    # round = db.Column('column', db.Integer)
     winningTeamID = db.Column('winningTeamID', db.Integer, db.ForeignKey('team.teamID'))
     losingTeamID = db.Column('losingTeamID', db.Integer, db.ForeignKey('team.teamID'))
     competitionID = db.Column('competitionID', db.Integer, db.ForeignKey('competition.name'))
@@ -97,7 +96,6 @@ class Game(db.Model):
     def __init__(self, score, gameID, winngingTeamID, losingTeamID, seasonID):
         self.score = score
         self.gameID = gameID
-        # self.round = round
         self.winningTeamID = winngingTeamID
         self.losingTeamID = losingTeamID
         self.seasonID = seasonID
