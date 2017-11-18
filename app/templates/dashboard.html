@@ -23,17 +23,6 @@
 
     <style type="text/css">
 
-        @media (max-width: 992px) {
-            .mobile-friendly {
-                margin-left: 0px!important;
-            }
-
-            .mobile-padding {
-                padding-left: 0px !important;
-                padding-right: 0px !important;
-            }
-        }
-
       body {
           font-family: 'Open Sans', sans-serif;
           font-size: 12px;
@@ -42,23 +31,6 @@
           margin-top: 10px;
         }
 
-        #main {
-          float: left;
-          width: 550px;
-        }
-
-        #sidebar {
-          float: right;
-          width: 100px;
-        }
-
-        #sequence {
-          width: 600px;
-        }
-
-        #legend {
-          padding: 10px 0 0 3px;
-        }
 
         #sequence text, #legend text {
           font-weight: 400;
@@ -90,66 +62,6 @@
 
         .hljs {
           color: #bababa;
-        }
-
-        .hljs-strong,
-        .hljs-emphasis {
-          color: #a8a8a2;
-        }
-
-        .hljs-bullet,
-        .hljs-quote,
-        .hljs-link,
-        .hljs-number,
-        .hljs-regexp,
-        .hljs-literal {
-          color: #6896ba;
-        }
-
-        .hljs-code,
-        .hljs-selector-class {
-          color: #a6e22e;
-        }
-
-        .hljs-emphasis {
-          font-style: italic;
-        }
-
-        .hljs-keyword,
-        .hljs-selector-tag,
-        .hljs-section,
-        .hljs-attribute,
-        .hljs-name,
-        .hljs-variable {
-          color: #cb7832;
-        }
-
-        .hljs-params {
-          color: #b9b9b9;
-        }
-
-        .hljs-string {
-          color: #6a8759;
-        }
-
-        .hljs-subst,
-        .hljs-type,
-        .hljs-built_in,
-        .hljs-builtin-name,
-        .hljs-symbol,
-        .hljs-selector-id,
-        .hljs-selector-attr,
-        .hljs-selector-pseudo,
-        .hljs-template-tag,
-        .hljs-template-variable,
-        .hljs-addition {
-          color: #e0c46c;
-        }
-
-        .hljs-comment,
-        .hljs-deletion,
-        .hljs-meta {
-          color: #7f7f7f;
         }
 
     </style>
@@ -495,10 +407,29 @@
                                                 Fifth Tab
                                             </div>
 
+                                            <!-- GROUP BY QUERY -->
                                             <div class="tab-pane" id="groupby_tab">
-                                                Sixth Tab
+                                                <div class="col-md-12">
+                                                    <div class="row" style="text-align: center;">
+                                                        <button class="btn btn-success btn-med" style="margin-bottom:10px;background-color: #22aba6;" onclick="groupby_query()"><span style="text-transform: initial;">Find number of Players in each club team who are not born in the country the club is located in</span></button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="divider"></div>
+
+                                                <div id="groupby-content" style="display: none;">
+                                                    <div>
+                                                        <div class="row" style="text-align: center;" id="select-json-btn">
+                                                            <button class="btn btn-success btn-sm" style="margin-bottom:20px;padding-top:8px;background-color: #22aba6;" data-toggle="modal" data-target="#response-modal">Show JSON Query Response</button>
+                                                        </div>
+                                                        <div class="card-content table-responsive table-full-width" style="padding: 30px;">
+                                                            <table class="table" id="groupby_table_insertion_team"></table>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
 
+                                            <!-- CREATE VIEW QUERY -->
                                             <div class="tab-pane" id="createview_tab">
                                                 Seventh Tab
                                             </div>

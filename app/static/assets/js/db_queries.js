@@ -22,25 +22,6 @@ $(document).ready(function() {
 
 });
 
-
-/**
- * Globals
- */
-var select_options_athlete = "";
-var select_options_team = "";
-var select_options_coach = "";
-var insert_options_athlete = "";
-var insert_options_team = "";
-
-var dropdown_options = {
-    "select_options_athlete" :select_options_athlete,
-    "select_options_team": select_options_team,
-    "select_options_coach": select_options_coach,
-    "insert_options_athlete": insert_options_athlete,
-    "insert_options_team": insert_options_team
-};
-
-
 /**
  * Helper functions
  */
@@ -53,59 +34,6 @@ function add_dropdown_icon(el_id, prefix){
     $('#' + prefix + '-' + el_id).append(
         '<i id="' + el_id + '" class="material-icons" style="font-size: 15px;float: right;color: green;font-weight: bolder;">done</i>'
     );
-}
-
-function dropdown_check(tName, el_id){
-    // TODO - how to add and remove checkmark
-    uncheck_others(el_id);
-
-    if (dropdown_options[el_id] == ""){
-        console.log('Empty');
-        dropdown_options[el_id] = el_id;
-        $('#' + el_id).append(
-            '<i id="check_' + el_id + '" class="material-icons" style="font-size: 15px;float: right;color: green;font-weight: bolder;">done</i>'
-        );
-    }
-    else {
-        console.log('Exists');
-        $('#check_' + el_id).remove();
-        dropdown_options[el_id] = "";
-    }
-
-    // map_to_functions(tName, el_id);
-
-}
-
-function uncheck_others(el_id){
-    var keys = Object.keys(dropdown_options);
-    var prefix = el_id.split('_')[0];
-    console.log(keys);
-    console.log(prefix);
-
-    for (var i=0; i < keys.length; i++){
-        // TODO - add rest of function mapping
-        console.log(prefix.indexOf('insert'));
-        if (prefix.indexOf('insert') !== -1 && keys[i] !== el_id){
-            dropdown_options[keys[i]] = "";
-            console.log('1#check_' + dropdown_options[keys[i]]);
-            $('#check_' + dropdown_options[keys[i]]).remove();
-        }
-        else if (prefix.indexOf('select') !== -1 && dropdown_options[keys[i]] !== el_id){
-            dropdown_options[keys[i]] = "";
-            $('#check_' + dropdown_options[keys[i]]).remove();
-        }
-    }
-}
-
-function map_to_functions(tName, el_id){
-    if (el_id.indexOf('insert_') !== -1){
-        insert_options(tName);
-    }
-    else if (el_id.indexOf('select_') !== -1){
-        select_queries(tName);
-    }
-    // TODO - add rest of function mapping
-
 }
 
 
@@ -128,7 +56,7 @@ function view_tables(tname){
             });
 }
 
-function db_table_vars(jsonData, tname){
+function db_table_vars(jsonData){
     var tbody = '';
     for (var key in jsonData) {
         if (jsonData.hasOwnProperty(key)) {
@@ -499,10 +427,10 @@ function delete_queries(tname){
                 $('#delete-content').show();
                 $('#response-json').text(JSON.stringify(response, undefined, 4));
                 if (isEqual(tname, "Stadium")){
-                    $('#delete_table_insertion_stadium').html(delete_table_vars(response.last_5_rows, tname));
+                    $('#delete_table_insertion_stadium').html(delete_table_vars(response.data, tname));
                 }
                 else{
-                    $('#delete_table_insertion_team').html(delete_table_vars(response.last_5_rows, tname));
+                    $('#delete_table_insertion_team').html(delete_table_vars(response.data, tname));
                 }
 
             });
@@ -550,4 +478,48 @@ function hide_delete(tname){
         $('#delete_query_team_demo').hide();
         $('#delete-team-content').show();
     }
+}
+
+/**
+ * GROUP BY Query
+ */
+
+function groupby_query(){
+    $.ajax({
+            type: 'GET',
+            url: '/groupby_query'
+        })
+            .done(function (response) {
+                demo.showNotification("GROUP BY query completed", "danger");
+                $('#groupby-content').show();
+                $('#response-json').text(JSON.stringify(response, undefined, 4));
+                $('#groupby_table_insertion_team').html(groupby_table_vars(response.entries));
+
+            });
+}
+
+function groupby_table_vars(jsonData){
+    var html = get_groupby_table_headers() + '<tbody>';
+
+    for (var key in jsonData) {
+        if (jsonData.hasOwnProperty(key)) {
+            html += '<tr>';
+
+            for (var i=0; i<jsonData[key].length; i++){
+                html += '<td>' + jsonData[key][i]['Team ID'] + '</td>';
+                html += '<td>' + jsonData[key][i]['Number Players'] + '</td>';
+            }
+            html += '<tr>';
+        }
+    }
+    html += '</tbody>';
+
+    return html;
+}
+
+function get_groupby_table_headers(){
+    return '<thead class="text-danger">' +
+                '<th>Team ID</th>' +
+                '<th>Number of Players</th>' +
+            '</thead>';
 }

@@ -47,8 +47,10 @@ def get_tables():
     available_tables = ['athlete', 'coach', 'competition', 'game', 'gamegoal', 'season', 'stadium', 'team']
 
     if table_name in available_tables:
-        sql = text('''SELECT * FROM ''' + table_name)  # shouldnt be a string
+        sql = text('''SELECT * FROM ''' + table_name)
         rows = db.engine.execute(sql)
+
+        headers = tables_map[table_name]
         data = []
         if table_name == "game":
             for r in rows:
@@ -58,9 +60,6 @@ def get_tables():
                 data.append([r[1], r[2], r[3]])
         else:
             data = [list(row[1:]) for row in rows]
-        headers = tables_map[table_name]
-        print(headers)
-        print(data)
 
         return jsonify({'code': 200, 'table': table_name, 'entries': data, 'headers': headers})
 
@@ -156,6 +155,7 @@ def insert_query():
 @gzipped
 def delete_query():
     """Delete from Stadium or Team"""
+    # TODO - Should I add row counts on deletes so it's easier to see that data has been removed?
 
     delete_table = request.form['table_name']
 
@@ -174,14 +174,23 @@ def delete_query():
 
     db.engine.execute(sql)
 
+    if delete_table == "Stadium":
+        row = db.session.query(Stadium).order_by(Stadium.name.asc()).all()
+        last_vals = [[r.name, r.location] for r in row]
+    elif delete_table == "Team":
+        row = db.session.query(Team).order_by(Team.teamID.asc()).all()
+        last_vals = [[r.teamID, r.location, r.dateCreated, r.goals, r.assists, r.wins, r.losses] for r in row]
+
     return jsonify({
         'query_type': 'DELETE',
         'table': delete_table,
-        'Code': 200
+        'Code': 200,
+        'data': last_vals
     })
 
 
 """ UPDATE QUERIES """
+# TODO - update queries + joins + Create View
 
 
 @queries.route('/update_player_stats', methods=['GET', 'POST'])
@@ -227,7 +236,7 @@ def update_player_country():
     })
 
 
-@queries.route('/groupby_query', methods=['GET', 'POST'])
+@queries.route('/groupby_query', methods=['GET'])
 @gzipped
 def groupby_query():
     """Find the number of players in each club team who are not born in the country the club is located in"""
@@ -240,4 +249,8 @@ def groupby_query():
     a_data = [list(row) for row in data]
     json_data = helper.select_groupby_table(data=a_data)
 
-    return jsonify({'entries': json_data})
+    return jsonify({
+        'Code': 200,
+        'Table': 'Team',
+        'entries': json_data
+    })
