@@ -177,6 +177,7 @@ competition['type'] = ['club', 'club', 'international', 'international']
 
 season = pd.DataFrame()
 season['seasonID'] = competition['year']
+season['location'] = 'Europe'
 
 gameGoal = pd.DataFrame()
 gameGoal['gameID'] = []

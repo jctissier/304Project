@@ -57,8 +57,9 @@ class Coach(db.Model):
     status = db.Column('status', db.String(100))
     placeOfBirth = db.Column('placeOfBirth', db.String(100))
     countryID = db.Column('countryID', db.String(100))
+    teamID = db.Column('teamID', db.Integer, db.ForeignKey('team.teamID'))
 
-    def __init__(self, id, salary, name, dob, status, placeOfBirth, countryID):
+    def __init__(self, id, salary, name, dob, status, placeOfBirth, countryID, teamID):
         self.id = id
         self.salary = salary
         self.name = name
@@ -66,6 +67,7 @@ class Coach(db.Model):
         self.status = status
         self.placeOfBirth = placeOfBirth
         self.countryID = countryID
+        self.teamID = teamID
 
 
 class Competition(db.Model):
@@ -73,10 +75,12 @@ class Competition(db.Model):
 
     name = db.Column('name', db.String(100), primary_key=True)
     winner = db.Column('winner', db.String(100))
+    comp_type = db.Column('compType', db.String(100))
 
-    def __init__(self, name, winner):
+    def __init__(self, name, winner, type):
         self.name = name
         self.winner = winner
+        self.comp_type = type
 
 
 class Game(db.Model):
@@ -104,22 +108,22 @@ class GameGoal(db.Model):
 
     gameID = db.Column('gameID', db.Integer, db.ForeignKey('game.gameID'), primary_key=True)
     athleteID = db.Column('id', db.Integer, db.ForeignKey('athlete.id'), nullable=False)
+    name = db.Column('name', db.String(100))
 
-    def __init__(self, gameID, athleteID):
+    def __init__(self, gameID, athleteID, name):
         self.gameID = gameID
         self.athleteID = athleteID
+        self.name = name
 
 
 class Season(db.Model):
     __tablename__ = 'Season'
 
     seasonID = db.Column('seasonID', db.Integer, primary_key=True)
-    year = db.Column('year', db.Integer)
     location = db.Column('location', db.String(100))
 
-    def __init__(self, seasonID, year, location):
+    def __init__(self, seasonID, location):
         self.seasonID = seasonID
-        self.year = year
         self.location = location
 
 
