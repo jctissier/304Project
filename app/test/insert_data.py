@@ -51,7 +51,7 @@ def delete_data():
 def update_data():
     main_pk = 238           # Lionel Messi = 238 id
 
-    sql = text('''UPDATE Athlete SET salary=999999 WHERE name="Lionel Messi"''')              # shouldnt be a string
+    sql = text('''UPDATE Athlete SET salary=999999 WHERE name="Lionel Messi" AND id=238''')              # shouldnt be a string
     db.engine.execute(sql)
 
     lionel_update = db.session.query(Athlete).get(main_pk)

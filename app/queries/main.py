@@ -193,67 +193,30 @@ def delete_query():
 
 @queries.route('/update_player_stats', methods=['GET', 'POST'])
 @gzipped
-def update_player_stats():
-    """updates the stats of a certain player"""
-    # TODO - display that particular player and change his stats
+def update_query():
+    """Updates the salary of a certain player"""
 
-    goals = 10
-    assists = 12
-    wins = 50
-    losses = 50
-    main_pk = 1000
+    p_keys = {
+        "Messi": 238,
+        "Ronaldo": 190,
+        "Neymar": 200
+    }
 
-    sql = text('''UPDATE Player SET goals = ''' + goals + ''', assists = ''' + assists
-               + ''', wins = ''' + wins + ''', losses = ''' + losses + ''' WHERE id = ''' + main_pk)
+    player_salary = request.args.get('new_salary')
+    player_key = request.args.get('player_name')
 
+    sql = text('''UPDATE Athlete SET salary = ''' + player_salary + ''' WHERE id = ''' + str(p_keys[player_key]))
     db.engine.execute(sql)
 
-    return jsonify({
-        'query_type': 'UPDATE',
-        'table': "Athlete",
-        'Code': 200
-    })
-
-
-@queries.route('/update_player_country', methods=['GET', 'POST'])
-@gzipped
-def update_player_country():
-    """Update the country of a certain player."""
-
-    main_pk = 5000
-    new_country = "Congo"
-
-    sql = text('''UPDATE Player Set countryID = ''' + new_country + ''' WHERE id = +''' + main_pk)
-
-    db.engine.execute(sql)
-
-    return jsonify({
-        'query_type': 'UPDATE',
-        'table': "Athlete",
-        'Code': 200
-    })
-
-
-""" GROUP BY QUERIES """
-
-
-@queries.route('/groupby_query', methods=['GET'])
-@gzipped
-def groupby_query():
-    """Find the number of players in each club team who are not born in the country the club is located in"""
-
-    sql = text('''SELECT t.teamID, count(*) FROM Athlete a, Team t
-                  WHERE a.teamID = t.teamID AND t.location <> a.countryID
-                  GROUP BY t.teamID''')
-
+    # Select player with updated salary
+    sql = text('''SELECT Athlete.name, Athlete.salary FROM Athlete WHERE id = ''' + str(p_keys[player_key]))
     data = db.engine.execute(sql)
-    a_data = [list(row) for row in data]
-    json_data = helper.select_groupby_table(data=a_data)
+    json_data = [list(row) for row in data]
 
     return jsonify({
         'code': 200,
-        'query_type': 'GROUP BY',
-        'table': 'Team',
+        'query_type': 'UPDATE',
+        'table': "Athlete",
         'entries': json_data
     })
 
@@ -284,14 +247,38 @@ def join_query():
     })
 
 
+""" GROUP BY QUERIES """
+
+
+@queries.route('/groupby_query', methods=['GET'])
+@gzipped
+def groupby_query():
+    """Find the number of players in each club team who are not born in the country the club is located in"""
+
+    sql = text('''SELECT t.teamID, count(*) FROM Athlete a, Team t
+                  WHERE a.teamID = t.teamID AND t.location <> a.countryID
+                  GROUP BY t.teamID''')
+
+    data = db.engine.execute(sql)
+    a_data = [list(row) for row in data]
+    json_data = helper.select_groupby_table(data=a_data)
+
+    return jsonify({
+        'code': 200,
+        'query_type': 'GROUP BY',
+        'table': 'Team',
+        'entries': json_data
+    })
+
+
 """ CREATE VIEW QUERY """
 
 
 @queries.route('/create_view_query', methods=['GET'])
 @gzipped
 def create_view():
-    """Manager view - only care about player stats and position played. Name, age (DOB), place of birth
-        & salary should not be accounted for when making team play decisions.
+    """Manager Performance view -
+        - Only care about Name, position and current stats
     """
 
     tb_exists = "SELECT count(*) FROM sqlite_master WHERE type='view' AND name='AthletePerformanceView'"
@@ -301,7 +288,7 @@ def create_view():
 
     else:
         sql = text('''CREATE VIEW AthletePerformanceView AS
-                    SELECT Athlete.Name, Athlete.Goals, Athlete.Assists, Athlete.Wins, Athlete.Losses, Athlete.Position
+                    SELECT Athlete.Name, Athlete.Position, Athlete.Goals, Athlete.Assists, Athlete.Wins, Athlete.Losses
                     FROM Athlete''')
         db.engine.execute(sql)
 

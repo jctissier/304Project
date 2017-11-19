@@ -400,7 +400,47 @@
 
                                             <!-- UPDATE QUERIES -->
                                             <div class="tab-pane" id="update_tab">
-                                                Fourth Tab
+                                                <div class="row">
+                                                    <div class="col-md-4" style="text-align: center;">
+                                                        <div class="dropdown">
+                                                            <a href="#" class="btn btn-md btn-warning dropdown-toggle" data-toggle="dropdown">
+                                                                Update Athlete Salary <b class="caret"></b>
+                                                            </a>
+                                                            <ul class="dropdown-menu" style="left:50%;right:auto;transform:translate(-50%,0);">
+                                                                <li><a onclick="update_dropdown('Messi')" id="update-Messi">Lionel Messi</a></li>
+                                                                <li><a onclick="update_dropdown('Ronaldo')" id="update-Ronaldo">Cristiano Ronaldo</a></li>
+                                                                <li><a onclick="update_dropdown('Neymar')" id="update-Neymar">Neymar</a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <div class="form-group label-floating">
+                                                            <label class="control-label">Set Salary of Athlete</label>
+                                                            <input type="text" class="form-control" id="update-salary">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="row" style="text-align: center;">
+                                                            <button class="btn btn-success btn-sm" style="margin-bottom:10px;padding-top:8px;background-color: #22aba6;" onclick="update_query()">Run Query</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="divider"></div>
+
+                                                <div>
+                                                    <div id="update-content" style="display: none;">
+                                                        <div class="row" style="text-align: center;" id="select-json-btn">
+                                                            <button class="btn btn-success btn-sm" style="margin-bottom:20px;padding-top:8px;background-color: #22aba6;" data-toggle="modal" data-target="#response-modal">Show JSON Query Response</button>
+                                                        </div>
+                                                        <div class="card-content table-responsive table-full-width" style="padding: 30px;">
+                                                            <table class="table">
+                                                                <thead id="update_table_insertion_headers" class="text-danger"></thead>
+                                                                <tbody id="update_table_insertion_body"></tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
 
                                             <!-- JOIN QUERIES -->
@@ -471,7 +511,31 @@
 
                                             <!-- CREATE VIEW QUERY -->
                                             <div class="tab-pane" id="createview_tab">
-                                                Seventh Tab
+
+                                                <div class="row" style="text-align:center;">
+                                                    <div class="col-md-12">
+                                                        <div class="row" style="text-align: center;">
+                                                            <button class="btn btn-success btn-med" style="margin-bottom:10px;background-color: #22aba6;" onclick="create_view_query()"><span>CREATE VIEW Query</span></button>
+                                                        </div>
+                                                        <span style="text-transform: initial;font-size:larger;">Manager Performance View - Manager wants to see the name, position and current stats of a particular athlete</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="divider"></div>
+
+                                                <div id="create-view-content" style="display: none;">
+                                                    <div>
+                                                        <div class="row" style="text-align: center;" id="select-json-btn">
+                                                            <button class="btn btn-success btn-sm" style="margin-bottom:20px;padding-top:8px;background-color: #22aba6;" data-toggle="modal" data-target="#response-modal">Show JSON Query Response</button>
+                                                        </div>
+                                                        <div class="card-content table-responsive table-full-width" style="padding: 30px;">
+                                                            <table class="table" id="groupby_table_insertion_team">
+                                                                <thead id="create_view_headers" class="text-danger"></thead>
+                                                                <tbody id="create_view_body"></tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
 
                                         </div>
