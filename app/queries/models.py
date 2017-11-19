@@ -1,4 +1,5 @@
 import collections
+from sqlalchemy import text
 
 
 """SELECT Query Helpers """
@@ -67,17 +68,63 @@ def select_coach_table(data):
 
 def select_groupby_table(data):
     json_data = collections.OrderedDict({})
-    for i in data:
+
+    for num, i in enumerate(data):
         json_data.update({
-            i[0]:
+            num:
                 [{
-                    'Team ID': i[1],
-                    'Number Players': i[2],
+                    'Team ID': i[0],
+                    'Number Players': i[1]
                 }]
         })
 
     return json_data
 
 
-"""INSERT Query Helpers """
+"""JOIN Query Helpers """
 
+
+def join_2_query1():
+    """Find all the teams that play in the 2017 edition of the Champions League that have scored at least 5 goals"""
+
+    desired_year = 2017
+    desired_leaguename = "UEFA Champions League"
+    desired_goals = 4
+
+    sql = text('''SELECT distinct t.teamID, t.location, t.dateCreated
+                  FROM Team t, Game g, Competition c, Season s
+                  WHERE g.seasonID = s.seasonID AND g.competitionID = c.competitionID AND
+                        (g.winningTeamID = t.teamID OR g.losingTeamID = t.teamID) AND t.goals > ''' +
+                        str(desired_goals) + ''' AND c.name = "''' + desired_leaguename + '''"''' +
+                        ''' AND s.seasonID = ''' + str(desired_year))
+
+    return sql
+
+
+def join_2_query2():
+    """Find all the players who have scored at least 10 goals and won a trophy in a certain city"""
+
+    desired_goals = 2
+    desired_city = "Europe"
+
+    sql = text('''SELECT distinct a.name, a.teamID, a.status, a.salary
+                  FROM Athlete a, Competition c, Game g, Season s
+                  WHERE c.winner = a.teamID AND g.competitionID = c.competitionID AND g.seasonID = s.seasonID AND
+                        a.goals > ''' + str(desired_goals) + ''' AND s.location = "''' + desired_city + '''"''')
+
+    return sql
+
+
+def join_3_query():
+    """Finds all players from country X who scored at least one goal in a game played in Y city and Z year."""
+    desired_country = "Brazil"
+    desired_gameDest = "Europe"
+    desired_gameYear = 2017
+
+    sql = text('''SELECT distinct a.name, a.teamID, a.status, a.salary
+                  FROM Athlete a, GameGoal gg, Game g, Season s
+                  WHERE a.id = gg.athleteID AND gg.gameID = g.gameID AND s.seasonID = g.seasonID AND a.countryID
+                        LIKE "''' + desired_country + '''"''' + ''' AND s.seasonID = ''' + str(desired_gameYear) +
+                        ''' AND s.location LIKE "''' + desired_gameDest + '''"''')
+
+    return sql

@@ -23,17 +23,6 @@
 
     <style type="text/css">
 
-        @media (max-width: 992px) {
-            .mobile-friendly {
-                margin-left: 0px!important;
-            }
-
-            .mobile-padding {
-                padding-left: 0px !important;
-                padding-right: 0px !important;
-            }
-        }
-
       body {
           font-family: 'Open Sans', sans-serif;
           font-size: 12px;
@@ -42,23 +31,6 @@
           margin-top: 10px;
         }
 
-        #main {
-          float: left;
-          width: 550px;
-        }
-
-        #sidebar {
-          float: right;
-          width: 100px;
-        }
-
-        #sequence {
-          width: 600px;
-        }
-
-        #legend {
-          padding: 10px 0 0 3px;
-        }
 
         #sequence text, #legend text {
           font-weight: 400;
@@ -90,66 +62,6 @@
 
         .hljs {
           color: #bababa;
-        }
-
-        .hljs-strong,
-        .hljs-emphasis {
-          color: #a8a8a2;
-        }
-
-        .hljs-bullet,
-        .hljs-quote,
-        .hljs-link,
-        .hljs-number,
-        .hljs-regexp,
-        .hljs-literal {
-          color: #6896ba;
-        }
-
-        .hljs-code,
-        .hljs-selector-class {
-          color: #a6e22e;
-        }
-
-        .hljs-emphasis {
-          font-style: italic;
-        }
-
-        .hljs-keyword,
-        .hljs-selector-tag,
-        .hljs-section,
-        .hljs-attribute,
-        .hljs-name,
-        .hljs-variable {
-          color: #cb7832;
-        }
-
-        .hljs-params {
-          color: #b9b9b9;
-        }
-
-        .hljs-string {
-          color: #6a8759;
-        }
-
-        .hljs-subst,
-        .hljs-type,
-        .hljs-built_in,
-        .hljs-builtin-name,
-        .hljs-symbol,
-        .hljs-selector-id,
-        .hljs-selector-attr,
-        .hljs-selector-pseudo,
-        .hljs-template-tag,
-        .hljs-template-variable,
-        .hljs-addition {
-          color: #e0c46c;
-        }
-
-        .hljs-comment,
-        .hljs-deletion,
-        .hljs-meta {
-          color: #7f7f7f;
         }
 
     </style>
@@ -254,9 +166,14 @@
                                                                 Select Query Options <b class="caret"></b>
                                                             </a>
                                                             <ul class="dropdown-menu" style="left:50%;right:auto;transform:translate(-50%,0);">
-                                                                <li><a onclick="select_queries('Athlete')">Athlete Table</a></li>
-                                                                <li><a onclick="select_queries('Team')">Team Table</a></li>
-                                                                <li><a onclick="select_queries('Coach')">Coach Table</a></li>
+                                                                <li><a onclick="view_tables('athlete')">Athlete Table</a></li>
+                                                                <li><a onclick="view_tables('team')">Team Table</a></li>
+                                                                <li><a onclick="view_tables('coach')">Coach Table</a></li>
+                                                                <li><a onclick="view_tables('competition')">Competition Table</a></li>
+                                                                <li><a onclick="view_tables('game')">Game Table</a></li>
+                                                                <li><a onclick="view_tables('gamegoal')">GameGoal Table</a></li>
+                                                                <li><a onclick="view_tables('season')">Season Table</a></li>
+                                                                <li><a onclick="view_tables('stadium')">Stadium Table</a></li>
                                                             </ul>
                                                         </div>
                                                     </div>
@@ -265,16 +182,20 @@
 
                                                 <div class="divider"></div>
 
-                                                <div id="select-content" style="display: none;">
-                                                    <pre style="padding-top:15px;background: #2b2b2b;" id="select_query_athlete"><code class="sql hljs">SELECT aId, aName, countryID, dob, placeOfBirth, salary, aStatus, goals, assists, wins, losses FROM Athlete</code></pre>
-                                                    <pre style="padding-top:15px;background: #2b2b2b;" id="select_query_team"><code class="sql hljs">SELECT teamID, aName, location, dateCreated, goals, assists, wins, losses FROM Team</code></pre>
-                                                    <pre style="padding-top:15px;background: #2b2b2b;" id="select_query_coach"><code class="sql hljs">SELECT cId, aName, salary, dob, astatus, placeOfBirth, countryID FROM Coach</code></pre>
-                                                    <div class="row" style="text-align: center;" id="select-json-btn">
+                                                <div id="select-content">
+                                                   <div class="row" style="text-align: center;" id="select-json-btn">
                                                         <button class="btn btn-success btn-sm" style="margin-bottom:20px;padding-top:8px;background-color: #22aba6;" data-toggle="modal" data-target="#response-modal">Show JSON Query Response</button>
                                                     </div>
 
                                                     <div class="card-content table-responsive table-full-width" style="padding: 30px;">
-                                                        <table class="table" id="select_table_insertion"></table>
+                                                        <table class="table">
+                                                            <thead id="db_table_insertion_headers" class="text-danger">
+                                                                <!-- Dynamically inserted headers -->
+                                                            </thead>
+                                                            <tbody id="db_table_insertion_body">
+                                                                <!-- Dynamically inserted body -->
+                                                            </tbody>
+                                                        </table>
                                                     </div>
                                                 </div>
                                             </div>
@@ -289,8 +210,8 @@
                                                                 Insert Query Options <b class="caret"></b>
                                                             </a>
                                                             <ul class="dropdown-menu" style="left:50%;right:auto;transform:translate(-50%,0);">
-                                                                <li><a onclick="insert_options('Athlete')">Athlete Table</a></li>
-                                                                <li><a onclick="insert_options('Team')">Team Table</a></li>
+                                                                <li><a onclick="insert_options('Athlete', this.id)" id="insert_options_athlete">Athlete Table</a></li>
+                                                                <li><a onclick="insert_options('Team', this.id)" id="insert_options_team">Team Table</a></li>
                                                             </ul>
                                                         </div>
                                                     </div>
@@ -331,9 +252,6 @@
                                                                 <button class="btn btn-success btn-sm" style="margin-bottom:10px;padding-top:8px;background-color: #22aba6;" onclick="insert_queries('Athlete')">Run Query</button>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-12">
-                                                            <pre style="padding-top:15px;background: #2b2b2b;" id="insert_query_athlete_demo"><code class="sql hljs"><span class="hljs-keyword">INSERT INTO </span>Athlete (salary, aName, dob, aStatus, placeOfBirth, countryID, goals, assists, wins, losses) &#10;<span class="hljs-keyword">VALUES </span>(1000000, "choose_name", "1970-01-05", "choose_status", "CAN", "CAN", 15, 10, 10, 0)</code></pre>
-                                                        </div>
                                                     </div>
                                                     <!-- Team Options -->
                                                     <div class="row" id="insert-team-options" style="display: none;">
@@ -367,9 +285,6 @@
                                                                 <button class="btn btn-success btn-sm" style="margin-bottom:10px;padding-top:8px;background-color: #22aba6;" onclick="insert_queries('Team')">Run Query</button>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-12">
-                                                            <pre style="padding-top:15px;background: #2b2b2b;" id="insert_query_team_demo"><code class="sql hljs"><span class="hljs-keyword">INSERT INTO </span>Team (tName, location, dateCreated, goals, assists, wins, losses) &#10;<span class="hljs-keyword">VALUES </span>("choose_name", "choose_location", "2018-01-01", 168, 153, 55, 20)</code></pre>
-                                                        </div>
                                                     </div>
                                                 </div>
 
@@ -377,8 +292,6 @@
 
                                                 <div id="insert-content">
                                                     <div id="insert-athlete-content" style="display: none;">
-                                                        <pre style="padding-top:15px;background: #2b2b2b;" id="insert_query_athlete"><code class="sql hljs"><span class="hljs-keyword">INSERT INTO </span>Athlete (salary, aName, dob, aStatus, placeOfBirth, countryID, goals, assists, wins, losses) &#10;<span class="hljs-keyword">VALUES </span><span id="insert-athlete-vals"></span></code></pre>
-
                                                         <div class="row" style="text-align: center;" id="select-json-btn">
                                                             <button class="btn btn-success btn-sm" style="margin-bottom:20px;padding-top:8px;background-color: #22aba6;" data-toggle="modal" data-target="#response-modal">Show JSON Query Response</button>
                                                         </div>
@@ -387,8 +300,6 @@
                                                         </div>
                                                     </div>
                                                     <div id="insert-team-content"style="display: none;">
-                                                        <pre style="padding-top:15px;background: #2b2b2b;" id="insert_query_team"><code class="sql hljs"><span class="hljs-keyword">INSERT INTO </span>Team (tName, location, dateCreated, goals, assists, wins, losses) &#10;<span class="hljs-keyword">VALUES </span><span id="insert-team-vals"></span></code></pre>
-
                                                         <div class="row" style="text-align: center;" id="select-json-btn">
                                                             <button class="btn btn-success btn-sm" style="margin-bottom:20px;padding-top:8px;background-color: #22aba6;" data-toggle="modal" data-target="#response-modal">Show JSON Query Response</button>
                                                         </div>
@@ -403,7 +314,88 @@
 
                                             <!-- DELETE QUERIES -->
                                             <div class="tab-pane" id="delete_tab">
-                                                Third Tab
+                                                <div class="row">
+                                                    <div class="col-md-4"></div>
+                                                    <div class="col-md-4" style="text-align: center;">
+                                                        <div class="dropdown">
+                                                            <a href="#" class="btn btn-md btn-warning dropdown-toggle" data-toggle="dropdown">
+                                                                Delete Query Options <b class="caret"></b>
+                                                            </a>
+                                                            <ul class="dropdown-menu" style="left:50%;right:auto;transform:translate(-50%,0);">
+                                                                <li><a onclick="delete_options('Stadium', this.id)" id="delete_options_stadium">Stadium Table</a></li>
+                                                                <li><a onclick="delete_options('Team', this.id)" id="delete_options_team">Team Table</a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4"></div>
+                                                </div>
+
+                                                <div class="divider"></div>
+
+                                                <div id="delete-options">
+                                                    <!-- Stadium Options -->
+                                                    <div class="row" id="delete-stadium-options" style="display: none;">
+                                                        <div class="col-md-4" style="text-align: center;">
+                                                            <div class="dropdown">
+                                                                <a href="#" class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown">
+                                                                    Choose Stadium Name<b class="caret"></b>
+                                                                </a>
+                                                                <ul class="dropdown-menu" style="left:50%;right:auto;transform:translate(-50%,0);">
+                                                                    <li><a onclick="delete_dropdown('Allianz Arena', 'sName')" id="delete-Allianz-Arena">Allianz Arena</a></li>
+                                                                    <li><a onclick="delete_dropdown('Anfield', 'sName')" id="delete-Anfield">Anfield</a></li>
+                                                                    <li><a onclick="delete_dropdown('Camp Nou', 'sName')" id="delete-Camp-Nou">Camp Nou</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="row" style="text-align: center;">
+                                                                <button class="btn btn-success btn-sm" style="margin-bottom:10px;padding-top:8px;background-color: #22aba6;" onclick="delete_queries('Stadium')">Run Query</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Team Options -->
+                                                    <div class="row" id="delete-team-options" style="display: none;">
+                                                        <div class="col-md-4" style="text-align: center;">
+                                                            <div class="dropdown">
+                                                                <a href="#" class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown">
+                                                                    Choose Team ID <b class="caret"></b>
+                                                                </a>
+                                                                <ul class="dropdown-menu" style="left:50%;right:auto;transform:translate(-50%,0);">
+                                                                    <li><a onclick="delete_dropdown('Brazil', 'tName')" id="insert-Brazil">Brazil</a></li>
+                                                                    <li><a onclick="delete_dropdown('Argentina', 'tName')" id="insert-Argentina">Argentina</a></li>
+                                                                    <li><a onclick="delete_dropdown('Portugal', 'tName')" id="insert-Portugal">Portugal</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="row" style="text-align: center;">
+                                                                <button class="btn btn-success btn-sm" style="margin-bottom:10px;padding-top:8px;background-color: #22aba6;" onclick="delete_queries('Team')">Run Query</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="divider"></div>
+
+                                                <div id="delete-content">
+                                                    <div id="delete-stadium-content" style="display: none;">
+                                                        <div class="row" style="text-align: center;" id="select-json-btn">
+                                                            <button class="btn btn-success btn-sm" style="margin-bottom:20px;padding-top:8px;background-color: #22aba6;" data-toggle="modal" data-target="#response-modal">Show JSON Query Response</button>
+                                                        </div>
+                                                        <div class="card-content table-responsive table-full-width" style="padding: 30px;">
+                                                            <table class="table" id="delete_table_insertion_stadium"></table>
+                                                        </div>
+                                                    </div>
+                                                    <div id="delete-team-content"style="display: none;">
+                                                        <div class="row" style="text-align: center;" id="select-json-btn">
+                                                            <button class="btn btn-success btn-sm" style="margin-bottom:20px;padding-top:8px;background-color: #22aba6;" data-toggle="modal" data-target="#response-modal">Show JSON Query Response</button>
+                                                        </div>
+                                                        <div class="card-content table-responsive table-full-width" style="padding: 30px;">
+                                                            <table class="table" id="delete_table_insertion_team"></table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                             </div>
 
                                             <!-- UPDATE QUERIES -->
@@ -412,13 +404,68 @@
                                             </div>
 
                                             <div class="tab-pane" id="join_tab">
-                                                Fifth Tab
+                                                <div class="row" style="margin-bottom: 15px;">
+                                                    <div class="col-md-4" style="text-align: center;">
+                                                        <div class="row" style="text-align: center;">
+                                                            <button class="btn btn-success btn-med" style="margin-bottom:10px;background-color: #22aba6;" onclick="join_query(1)"><span>Join 2 Tables</span><br></button>
+                                                        </div>
+                                                        <span style="text-transform: initial;font-size:larger;">Find all the teams that play in the Champions League 2017 that have scored at least 5 goals</span>
+                                                    </div>
+                                                    <div class="col-md-4" style="text-align: center;">
+                                                        <div class="row" style="text-align: center;">
+                                                            <button class="btn btn-success btn-med" style="margin-bottom:10px;background-color: #22aba6;" onclick="join_query(2)"><span>Join 2 Tables</span><br></button>
+                                                        </div>
+                                                        <span style="text-transform: initial;font-size:larger;">Find all the players who have scored at least 10 goals and won a trophy in Europe</span>
+                                                    </div>
+                                                    <div class="col-md-4" style="text-align: center;">
+                                                        <div class="row" style="text-align: center;">
+                                                            <button class="btn btn-success btn-med" style="margin-bottom:10px;background-color: #22aba6;" onclick="join_query(3)"><span>Join 3 Tables</span></button>
+                                                        </div>
+                                                        <span style="text-transform: initial;font-size:larger;">Finds all players from Brazil who scored at least one goal in a game played in Europe and in 2017</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="divider"></div>
+
+                                                <div id="join-content" style="display: none;">
+                                                    <div>
+                                                        <div class="row" style="text-align: center;" id="select-json-btn">
+                                                            <button class="btn btn-success btn-sm" style="margin-bottom:20px;padding-top:8px;background-color: #22aba6;" data-toggle="modal" data-target="#response-modal">Show JSON Query Response</button>
+                                                        </div>
+                                                        <div class="card-content table-responsive table-full-width" style="padding: 30px;">
+                                                            <table class="table">
+                                                                <thead id="join_table_insertion_headers" class="text-danger"></thead>
+                                                                <tbody id="join_table_insertion_body"></tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                             </div>
 
+                                            <!-- GROUP BY QUERY -->
                                             <div class="tab-pane" id="groupby_tab">
-                                                Sixth Tab
+                                                <div class="col-md-12">
+                                                    <div class="row" style="text-align: center;">
+                                                        <button class="btn btn-success btn-med" style="margin-bottom:10px;background-color: #22aba6;" onclick="groupby_query()"><span style="text-transform: initial;">Find number of Players in each club team who are not born in the country the club is located in</span></button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="divider"></div>
+
+                                                <div id="groupby-content" style="display: none;">
+                                                    <div>
+                                                        <div class="row" style="text-align: center;" id="select-json-btn">
+                                                            <button class="btn btn-success btn-sm" style="margin-bottom:20px;padding-top:8px;background-color: #22aba6;" data-toggle="modal" data-target="#response-modal">Show JSON Query Response</button>
+                                                        </div>
+                                                        <div class="card-content table-responsive table-full-width" style="padding: 30px;">
+                                                            <table class="table" id="groupby_table_insertion_team"></table>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
 
+                                            <!-- CREATE VIEW QUERY -->
                                             <div class="tab-pane" id="createview_tab">
                                                 Seventh Tab
                                             </div>
