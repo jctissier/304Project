@@ -10,9 +10,6 @@ import app.queries.models as helper
 queries = Blueprint('queries', __name__)
 
 
-# TODO - Manager view, see everything, player view can only see stats (not salaries)
-
-
 @queries.route('/')
 @gzipped
 def load():
@@ -65,50 +62,13 @@ def get_tables():
     return jsonify({'code': 400, 'error': 'Table Name was not valid'})
 
 
-""" SELECT statements are now done through the function above """
-# @queries.route('/select_query', methods=['GET', 'POST'])         # Example
-# @gzipped
-# def select_athlete():
-#     """
-#     SELECT queries from table: Athlete, Team or Coach
-#     :return: JSON{} - entries in table
-#     """
-#     select_table = request.form['table_name']
-#
-#     if select_table == "Athlete":                           # Query Athlete table
-#         a_sql = text('''SELECT Athlete.id, Athlete.salary, Athlete.name, Athlete.dob, Athlete.status, Athlete.placeOfBirth,
-#                         Athlete.countryID, Athlete.goals, Athlete.assists, Athlete.wins, Athlete.losses
-#                         FROM Athlete''')
-#         data = db.engine.execute(a_sql)
-#         a_data = [list(row) for row in data]                # Python list comprehension
-#         json_data = helper.select_athlete_table(data=a_data)
-#     elif select_table == "Team":                            # Query Team table
-#         a_sql = text('''SELECT Team.TeamID, Team.location, Team.dateCreated, Team.goals,
-#                         Team.assists, Team.wins, Team.losses
-#                         FROM Team''')
-#         data = db.engine.execute(a_sql)
-#         t_data = [list(row) for row in data]
-#         json_data = helper.select_team_table(data=t_data)
-#     elif select_table == "Coach":                           # Query Coach table
-#         a_sql = text('''SELECT Coach.id, Coach.salary, Coach.name, Coach.dob, Coach.status, Coach.placeOfBirth,
-#                         Coach.countryID
-#                         FROM Coach''')
-#         data = db.engine.execute(a_sql)
-#         c_data = [list(row) for row in data]  # Python list comprehension
-#         json_data = helper.select_coach_table(data=c_data)
-#     else:
-#         exit("This should never happen")
-#
-#     return jsonify({'entries': json_data})
-
-
 """ INSERT QUERIES """
 
 
 @queries.route('/insert_query', methods=['GET', 'POST'])
 @gzipped
 def insert_query():
-    """Athlete, Team or Coach"""
+    """Insert data for Athlete, Team or Coach"""
     insert_table = request.form['table_name']
 
     # Athlete fields
@@ -154,7 +114,6 @@ def insert_query():
 @gzipped
 def delete_query():
     """Delete from Stadium or Team"""
-    # TODO - Should I add row counts on deletes so it's easier to see that data has been removed?
 
     delete_table = request.form['table_name']
 
