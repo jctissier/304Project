@@ -286,3 +286,31 @@ def join_query():
 
 """ CREATE VIEW QUERY """
 
+
+@queries.route('/create_view_query', methods=['GET'])
+@gzipped
+def create_view():
+    """Manager view - only care about player stats and position played. Name, age (DOB), place of birth
+        & salary should not be accounted for when making team play decisions.
+    """
+
+    tb_exists = "SELECT count(*) FROM sqlite_master WHERE type='view' AND name='AthletePerformanceView'"
+    row = db.engine.execute(tb_exists)
+    if str(row.fetchone()) == '(1,)':
+        print("Create View already created")
+
+    else:
+        sql = text('''CREATE VIEW AthletePerformanceView AS
+                    SELECT Athlete.Name, Athlete.Goals, Athlete.Assists, Athlete.Wins, Athlete.Losses, Athlete.Position
+                    FROM Athlete''')
+        db.engine.execute(sql)
+
+    qry_view = text('''SELECT * FROM AthletePerformanceView''')         # View Table
+    rows = db.engine.execute(qry_view)
+    json_data = [list(row) for row in rows]
+
+    return jsonify({
+        'code': 200,
+        'query_type': 'CREATE VIEW',
+        'entries': json_data
+    })
