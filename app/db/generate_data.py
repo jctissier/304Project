@@ -19,19 +19,19 @@ def make():
     from sqlalchemy import create_engine
     from sqlalchemy.orm import sessionmaker
 
-    stadiums = pd.read_csv('app/db/dataSeed/stadiums.csv')
+    stadiums = pd.read_csv('dataSeed/stadiums.csv')
     locations = [stadiums['City'][i].strip() + ', ' + stadiums['Country'][i].strip() for i in range(len(stadiums))]
     stadiums['Team'] = stadiums['Team'].apply(lambda x: x.strip())
     stadiums['Location'] = locations
     stadiums_filtered = stadiums[['Stadium', 'Location']]
     stadiums_filtered.columns = ['name', 'location']
-    countriesPopulation = pd.read_csv('app/db/dataSeed/countriesPopulation.csv')
-    playersData = pd.read_csv('app/db/dataSeed/players.csv')
+    countriesPopulation = pd.read_csv('dataSeed/countriesPopulation.csv')
+    playersData = pd.read_csv('dataSeed/players.csv')
     players = playersData
 
 
 
-    nationalities = ['Brazil', 'Argentina', 'Colombia', 'France', 'Italy', 'Spain', 'Germany', 'England', 'Portugal',
+    nationalities = ['Brazil', 'Argentina', 'Colombia', 'France', 'Italy', 'Spain', 'Gemrmany', 'England', 'Portugal',
                      'Ivory Coast', 'Nigeria', 'Japan', 'United States']
     continents = ['South America', 'South America', 'South America', 'Europe', 'Europe', 'Europe', 'Europe', 'Europe',
                   'Europe', 'Africa', 'Africa', 'Asia', 'North America']
@@ -249,18 +249,18 @@ def make():
                         athletes.loc[athletes['id'] == goal_scorerID, 'goals'] += 1
                         gameGoal.at[len(gameGoal), ['gameID', 'athleteID', 'name']] = [count, goal_scorerID, athletes[
                             athletes['id'] == goal_scorerID]['name'].tolist()[0]]
-                    for passerID in np.random.choice(team2Players[team2Players['position'] != 'GK']['id'][:8],
+                    for passerID in np.random.choice(team1Players[team1Players['position'] != 'GK']['id'][:8],
                                                      team1_assists):
-                        athletes.loc[athletes['id'] == goal_scorerID, 'assists'] += 1
+                        athletes.loc[athletes['id'] == passerID, 'assists'] += 1
                 if team2_goals > 0:
-                    for goal_scorerID in np.random.choice(team1Players[team1Players['position'] != 'GK']['id'][:8],
+                    for goal_scorerID in np.random.choice(team2Players[team2Players['position'] != 'GK']['id'][:8],
                                                           team2_goals):
                         athletes.loc[athletes['id'] == goal_scorerID, 'goals'] += 1
                         gameGoal.at[len(gameGoal), ['gameID', 'athleteID', 'name']] = [count, goal_scorerID, athletes[
                             athletes['id'] == goal_scorerID]['name'].tolist()[0]]
                     for passerID in np.random.choice(team2Players[team2Players['position'] != 'GK']['id'][:8],
                                                      team2_assists):
-                        athletes.loc[athletes['id'] == goal_scorerID, 'assists'] += 1
+                        athletes.loc[athletes['id'] == passerID, 'assists'] += 1
 
                 if team1_goals > team2_goals:
                     winner = team1

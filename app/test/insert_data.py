@@ -150,3 +150,17 @@ def createview():
     print(a_data)
 
 # createview()
+
+
+def insert_new():
+    t_name = "Test"
+    t_loc = "France"
+    table = 'Team (teamID, location, dateCreated, goals, assists, wins, losses)'
+    vals = 'VALUES ("' + t_name + '", "' + t_loc + '", "2018-01-01", 168, 153, 55, 20)'
+
+    row = db.session.query(Team).filter_by(teamID=t_name).count()
+    print(row)
+    # sql = text('''INSERT INTO ''' + table + vals)
+    # db.engine.execute(sql)
+
+insert_new()

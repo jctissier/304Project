@@ -1,5 +1,4 @@
 from app.util.util import gzipped
-import collections
 from flask import Blueprint, request, render_template, jsonify
 from app.db.database import Athlete, Coach, Competition, Game, Season, Stadium, Team, GameGoal, db
 from sqlalchemy import text
@@ -83,13 +82,18 @@ def insert_query():
         table = 'Athlete (id, Salary, Name, DOB, Status, placeOfBirth, countryID, goals, assists, wins, losses)'
         vals = 'VALUES (' + str(last_id + 1) + ', 999999, "' + a_name + '", "1970-01-05", "' + a_status + '", "Canada", "Canada", 15, 10, 10, 0)'
     elif insert_table == "Team":
+        team_exists = db.session.query(Team).filter_by(teamID=t_name).count()
         table = 'Team (teamID, location, dateCreated, goals, assists, wins, losses)'
         vals = 'VALUES ("' + t_name + '", "' + t_loc + '", "2018-01-01", 168, 153, 55, 20)'
     else:
         return jsonify({'error': "Invalid Table Name"})
 
     sql = text('''INSERT INTO ''' + table + vals)
-    db.engine.execute(sql)                                      # Runs the SQL INSERT
+
+    if insert_table == "Team" and team_exists > 0:
+        pass
+    else:
+        db.engine.execute(sql)                                      # Runs the SQL INSERT
 
     if insert_table == "Athlete":
         row = db.session.query(Athlete).order_by(Athlete.id.desc()).limit(5).all()
@@ -98,6 +102,7 @@ def insert_query():
     elif insert_table == "Team":
         row = db.session.query(Team).order_by(Team.teamID.desc()).all()
         last_vals = [[r.teamID, r.location, r.dateCreated, r.goals, r.assists, r.wins, r.losses] for r in row]
+
 
     return jsonify({
         'code': 200,
@@ -152,7 +157,7 @@ def delete_query():
 
 @queries.route('/update_player_stats', methods=['GET', 'POST'])
 @gzipped
-def update_query():
+def update_query_salary():
     """Updates the salary of a certain player"""
 
     p_keys = {
@@ -179,6 +184,35 @@ def update_query():
         'entries': json_data
     })
 
+
+@queries.route('/update_player_country', methods=['GET', 'POST'])
+@gzipped
+def update_query_country():
+    """Updates the country of a certain player"""
+
+    p_keys = {
+        "Messi": 238,
+        "Ronaldo": 190,
+        "Neymar": 200
+    }
+
+    player_country = request.args.get('new_country')
+    player_key = request.args.get('player_name')
+
+    sql = text('''UPDATE Athlete SET countryID = "''' + player_country + '''" WHERE id = ''' + str(p_keys[player_key]))
+    db.engine.execute(sql)
+
+    # Select player with updated salary
+    sql = text('''SELECT Athlete.name, Athlete.countryID FROM Athlete WHERE id = ''' + str(p_keys[player_key]))
+    data = db.engine.execute(sql)
+    json_data = [list(row) for row in data]
+
+    return jsonify({
+        'code': 200,
+        'query_type': 'UPDATE',
+        'table': "Athlete",
+        'entries': json_data
+    })
 
 """ JOIN QUERIES """
 

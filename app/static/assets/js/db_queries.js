@@ -388,6 +388,26 @@ function hide_delete(tname){
  * UPDATE Query
  */
 var update_name = "";
+var update_salary = $('#update-salary').val();
+var update_country = $('#update-country').val();
+
+var btn_salary = 0;
+
+function update_show(num){
+    $('#update-div').show();
+    if (num === 1){
+        $('#update-salary-text').show();
+        $('#update-country-text').hide();
+        $('#update-country').val("");
+        btn_salary = true;
+    }
+    else if (num === 2){
+        $('#update-salary-text').hide();
+        $('#update-country-text').show();
+        $('#update-salary').val("");
+        btn_salary = false;
+    }
+}
 
 
 function update_dropdown(val){
@@ -405,30 +425,46 @@ function check_dropdown_vals_update(){
         demo.showNotification("Player to update has not been selected", "info");
         return false;
     }
-    if ($('#update-salary').val() === ""){
+    if ($('#update-salary').val() === "" && btn_salary === true){
         demo.showNotification("New Player Salary is blank", "info");
+        return false;
+    }
+    if ($('#update-country').val() === "" && btn_salary === false){
+        demo.showNotification("New Player Country is blank", "info");
         return false;
     }
     return true;
 }
 
 function update_query(){
+    var num = 0;
+    var qry_url = "update_player_stats";
+    if ($('#update-country').val() === "" && $('#update-salary').val() !== ""){
+        num = 1;
+    }
+    else if ($('#update-country').val() !== "" && $('#update-salary').val() === ""){
+        num = 2;
+        qry_url = "update_player_country";
+    }
+
+
     var isFilledIn = check_dropdown_vals_update();
     if (isFilledIn) {
 
         $.ajax({
             type: 'GET',
-            url: '/update_player_stats',
+            url: '/' + qry_url,
             data: {
                 player_name: update_name,
-                new_salary: $('#update-salary').val()
+                new_salary: $('#update-salary').val(),
+                new_country: $('#update-country').val()
             }
         })
             .done(function (response) {
                 demo.showNotification("UPDATE query completed", "danger");
                 $('#update-content').show();
                 $('#response-json').text(JSON.stringify(response, undefined, 4));
-                $('#update_table_insertion_headers').html(get_update_table_headers());
+                $('#update_table_insertion_headers').html(get_update_table_headers(), num);
                 $('#update_table_insertion_body').html(update_table_vars(response.entries));
 
             });
@@ -450,11 +486,20 @@ function update_table_vars(jsonData){
     return html;
 }
 
-function get_update_table_headers(){
-    return  '<tr>' +
+function get_update_table_headers(num){
+    if (num === 1){
+        return  '<tr>' +
                 '<th>Athlete Name</th>' +
                 '<th>Athlete Salary</th>' +
             '</tr>';
+    }
+    else if (num === 2){
+        return  '<tr>' +
+                '<th>Athlete Name</th>' +
+                '<th>Athlete Country</th>' +
+            '</tr>';
+    }
+
 }
 
 

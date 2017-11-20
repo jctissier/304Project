@@ -18,28 +18,28 @@ class Athlete(db.Model):
     __tablename__ = 'Athlete'
 
     id = db.Column('id', db.Integer, primary_key=True)
-    teamID = db.Column('teamID', db.Integer, db.ForeignKey('team.teamID'))
     salary = db.Column('salary', db.Integer)
     name = db.Column('name', db.String(100))
     dob = db.Column('dob', db.Date)
     status = db.Column('status', db.String(100))
     placeOfBirth = db.Column('placeOfBirth', db.String(100))
     countryID = db.Column('countryID', db.String(100))
+    teamID = db.Column('teamID', db.String, db.ForeignKey('team.teamID'))
     goals = db.Column('goals', db.Integer)
     assists = db.Column('assists', db.Integer)
     wins = db.Column('wins', db.Integer)
     losses = db.Column('losses', db.Integer)
     position = db.Column('position', db.String(50))
 
-    def __init__(self, id, teamID, salary, name, dob, status, placeOfBirth, countryID, goals, assists, wins, losses, position):
+    def __init__(self, id, salary, name, dob, status, placeOfBirth, countryID, teamID, goals, assists, wins, losses, position):
         self.id = id
-        self.teamID = teamID
         self.salary = salary
         self.name = name
         self.dob = dob
         self.status = status
         self.placeOfBirth = placeOfBirth
         self.countryID = countryID
+        self.teamID = teamID
         self.goals = goals
         self.assists = assists
         self.wins = wins
@@ -57,7 +57,7 @@ class Coach(db.Model):
     status = db.Column('status', db.String(100))
     placeOfBirth = db.Column('placeOfBirth', db.String(100))
     countryID = db.Column('countryID', db.String(100))
-    teamID = db.Column('teamID', db.Integer, db.ForeignKey('team.teamID'))
+    teamID = db.Column('teamID', db.String, db.ForeignKey('team.teamID'))
 
     def __init__(self, id, salary, name, dob, status, placeOfBirth, countryID, teamID):
         self.id = id
@@ -139,7 +139,7 @@ class Stadium(db.Model):
 class Team(db.Model):
     __tablename__ = 'Team'
 
-    teamID = db.Column('teamID', db.Integer, primary_key=True)
+    teamID = db.Column('teamID', db.String, primary_key=True)
     location = db.Column('location', db.String(100))
     dateCreated = db.Column('dateCreated', db.Date)
     goals = db.Column('goals', db.Integer)

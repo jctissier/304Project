@@ -400,11 +400,27 @@
 
                                             <!-- UPDATE QUERIES -->
                                             <div class="tab-pane" id="update_tab">
+
                                                 <div class="row">
+                                                    <div class="col-md-6" style="text-align: center;">
+                                                        <div class="row" style="text-align: center;">
+                                                            <button class="btn btn-success btn-med" style="margin-bottom:10px;background-color: #22aba6;" onclick="update_show(1)"><span>Update Player Salary</span><br></button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6" style="text-align: center;">
+                                                        <div class="row" style="text-align: center;">
+                                                            <button class="btn btn-success btn-med" style="margin-bottom:10px;background-color: #22aba6;" onclick="update_show(2)"><span>Update Player Country</span><br></button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="divider"></div>
+
+                                                <div class="row" id="update-div" style="display: none;">
                                                     <div class="col-md-4" style="text-align: center;">
                                                         <div class="dropdown">
                                                             <a href="#" class="btn btn-md btn-warning dropdown-toggle" data-toggle="dropdown">
-                                                                Update Athlete Salary <b class="caret"></b>
+                                                                Update Athlete<b class="caret"></b>
                                                             </a>
                                                             <ul class="dropdown-menu" style="left:50%;right:auto;transform:translate(-50%,0);">
                                                                 <li><a onclick="update_dropdown('Messi')" id="update-Messi">Lionel Messi</a></li>
@@ -413,10 +429,16 @@
                                                             </ul>
                                                         </div>
                                                     </div>
-                                                    <div class="col-sm-4">
+                                                    <div class="col-sm-4" style="display: none;" id="update-salary-text">
                                                         <div class="form-group label-floating">
                                                             <label class="control-label">Set Salary of Athlete</label>
                                                             <input type="text" class="form-control" id="update-salary">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-4" style="display: none;" id="update-country-text">
+                                                        <div class="form-group label-floating">
+                                                            <label class="control-label">Set Country of Athlete</label>
+                                                            <input type="text" class="form-control" id="update-country">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4">
