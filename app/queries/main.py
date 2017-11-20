@@ -1,5 +1,4 @@
 from app.util.util import gzipped
-import collections
 from flask import Blueprint, request, render_template, jsonify
 from app.db.database import Athlete, Coach, Competition, Game, Season, Stadium, Team, GameGoal, db
 from sqlalchemy import text
@@ -8,9 +7,6 @@ import app.queries.models as helper
 
 # Define the blueprint: 'queries'
 queries = Blueprint('queries', __name__)
-
-
-# TODO - Manager view, see everything, player view can only see stats (not salaries)
 
 
 @queries.route('/')
@@ -65,50 +61,13 @@ def get_tables():
     return jsonify({'code': 400, 'error': 'Table Name was not valid'})
 
 
-""" SELECT statements are now done through the function above """
-# @queries.route('/select_query', methods=['GET', 'POST'])         # Example
-# @gzipped
-# def select_athlete():
-#     """
-#     SELECT queries from table: Athlete, Team or Coach
-#     :return: JSON{} - entries in table
-#     """
-#     select_table = request.form['table_name']
-#
-#     if select_table == "Athlete":                           # Query Athlete table
-#         a_sql = text('''SELECT Athlete.id, Athlete.salary, Athlete.name, Athlete.dob, Athlete.status, Athlete.placeOfBirth,
-#                         Athlete.countryID, Athlete.goals, Athlete.assists, Athlete.wins, Athlete.losses
-#                         FROM Athlete''')
-#         data = db.engine.execute(a_sql)
-#         a_data = [list(row) for row in data]                # Python list comprehension
-#         json_data = helper.select_athlete_table(data=a_data)
-#     elif select_table == "Team":                            # Query Team table
-#         a_sql = text('''SELECT Team.TeamID, Team.location, Team.dateCreated, Team.goals,
-#                         Team.assists, Team.wins, Team.losses
-#                         FROM Team''')
-#         data = db.engine.execute(a_sql)
-#         t_data = [list(row) for row in data]
-#         json_data = helper.select_team_table(data=t_data)
-#     elif select_table == "Coach":                           # Query Coach table
-#         a_sql = text('''SELECT Coach.id, Coach.salary, Coach.name, Coach.dob, Coach.status, Coach.placeOfBirth,
-#                         Coach.countryID
-#                         FROM Coach''')
-#         data = db.engine.execute(a_sql)
-#         c_data = [list(row) for row in data]  # Python list comprehension
-#         json_data = helper.select_coach_table(data=c_data)
-#     else:
-#         exit("This should never happen")
-#
-#     return jsonify({'entries': json_data})
-
-
 """ INSERT QUERIES """
 
 
 @queries.route('/insert_query', methods=['GET', 'POST'])
 @gzipped
 def insert_query():
-    """Athlete, Team or Coach"""
+    """Insert data for Athlete, Team or Coach"""
     insert_table = request.form['table_name']
 
     # Athlete fields
@@ -123,13 +82,18 @@ def insert_query():
         table = 'Athlete (id, Salary, Name, DOB, Status, placeOfBirth, countryID, goals, assists, wins, losses)'
         vals = 'VALUES (' + str(last_id + 1) + ', 999999, "' + a_name + '", "1970-01-05", "' + a_status + '", "Canada", "Canada", 15, 10, 10, 0)'
     elif insert_table == "Team":
+        team_exists = db.session.query(Team).filter_by(teamID=t_name).count()
         table = 'Team (teamID, location, dateCreated, goals, assists, wins, losses)'
         vals = 'VALUES ("' + t_name + '", "' + t_loc + '", "2018-01-01", 168, 153, 55, 20)'
     else:
         return jsonify({'error': "Invalid Table Name"})
 
     sql = text('''INSERT INTO ''' + table + vals)
-    db.engine.execute(sql)                                      # Runs the SQL INSERT
+
+    if insert_table == "Team" and team_exists > 0:
+        pass
+    else:
+        db.engine.execute(sql)                                      # Runs the SQL INSERT
 
     if insert_table == "Athlete":
         row = db.session.query(Athlete).order_by(Athlete.id.desc()).limit(5).all()
@@ -138,6 +102,7 @@ def insert_query():
     elif insert_table == "Team":
         row = db.session.query(Team).order_by(Team.teamID.desc()).all()
         last_vals = [[r.teamID, r.location, r.dateCreated, r.goals, r.assists, r.wins, r.losses] for r in row]
+
 
     return jsonify({
         'code': 200,
@@ -154,7 +119,6 @@ def insert_query():
 @gzipped
 def delete_query():
     """Delete from Stadium or Team"""
-    # TODO - Should I add row counts on deletes so it's easier to see that data has been removed?
 
     delete_table = request.form['table_name']
 
@@ -193,70 +157,62 @@ def delete_query():
 
 @queries.route('/update_player_stats', methods=['GET', 'POST'])
 @gzipped
-def update_player_stats():
-    """updates the stats of a certain player"""
-    # TODO - display that particular player and change his stats
+def update_query_salary():
+    """Updates the salary of a certain player"""
 
-    goals = 10
-    assists = 12
-    wins = 50
-    losses = 50
-    main_pk = 1000
+    p_keys = {
+        "Messi": 238,
+        "Ronaldo": 190,
+        "Neymar": 200
+    }
 
-    sql = text('''UPDATE Player SET goals = ''' + goals + ''', assists = ''' + assists
-               + ''', wins = ''' + wins + ''', losses = ''' + losses + ''' WHERE id = ''' + main_pk)
+    player_salary = request.args.get('new_salary')
+    player_key = request.args.get('player_name')
 
+    sql = text('''UPDATE Athlete SET salary = ''' + player_salary + ''' WHERE id = ''' + str(p_keys[player_key]))
     db.engine.execute(sql)
 
+    # Select player with updated salary
+    sql = text('''SELECT Athlete.name, Athlete.salary FROM Athlete WHERE id = ''' + str(p_keys[player_key]))
+    data = db.engine.execute(sql)
+    json_data = [list(row) for row in data]
+
     return jsonify({
+        'code': 200,
         'query_type': 'UPDATE',
         'table': "Athlete",
-        'Code': 200
+        'entries': json_data
     })
 
 
 @queries.route('/update_player_country', methods=['GET', 'POST'])
 @gzipped
-def update_player_country():
-    """Update the country of a certain player."""
+def update_query_country():
+    """Updates the country of a certain player"""
 
-    main_pk = 5000
-    new_country = "Congo"
+    p_keys = {
+        "Messi": 238,
+        "Ronaldo": 190,
+        "Neymar": 200
+    }
 
-    sql = text('''UPDATE Player Set countryID = ''' + new_country + ''' WHERE id = +''' + main_pk)
+    player_country = request.args.get('new_country')
+    player_key = request.args.get('player_name')
 
+    sql = text('''UPDATE Athlete SET countryID = "''' + player_country + '''" WHERE id = ''' + str(p_keys[player_key]))
     db.engine.execute(sql)
 
-    return jsonify({
-        'query_type': 'UPDATE',
-        'table': "Athlete",
-        'Code': 200
-    })
-
-
-""" GROUP BY QUERIES """
-
-
-@queries.route('/groupby_query', methods=['GET'])
-@gzipped
-def groupby_query():
-    """Find the number of players in each club team who are not born in the country the club is located in"""
-
-    sql = text('''SELECT t.teamID, count(*) FROM Athlete a, Team t
-                  WHERE a.teamID = t.teamID AND t.location <> a.countryID
-                  GROUP BY t.teamID''')
-
+    # Select player with updated salary
+    sql = text('''SELECT Athlete.name, Athlete.countryID FROM Athlete WHERE id = ''' + str(p_keys[player_key]))
     data = db.engine.execute(sql)
-    a_data = [list(row) for row in data]
-    json_data = helper.select_groupby_table(data=a_data)
+    json_data = [list(row) for row in data]
 
     return jsonify({
         'code': 200,
-        'query_type': 'GROUP BY',
-        'table': 'Team',
+        'query_type': 'UPDATE',
+        'table': "Athlete",
         'entries': json_data
     })
-
 
 """ JOIN QUERIES """
 
@@ -284,5 +240,57 @@ def join_query():
     })
 
 
+""" GROUP BY QUERIES """
+
+
+@queries.route('/groupby_query', methods=['GET'])
+@gzipped
+def groupby_query():
+    """Find the number of players in each club team who are not born in the country the club is located in"""
+
+    sql = text('''SELECT t.teamID, count(*) FROM Athlete a, Team t
+                  WHERE a.teamID = t.teamID AND t.location <> a.countryID
+                  GROUP BY t.teamID''')
+
+    data = db.engine.execute(sql)
+    a_data = [list(row) for row in data]
+    json_data = helper.select_groupby_table(data=a_data)
+
+    return jsonify({
+        'code': 200,
+        'query_type': 'GROUP BY',
+        'table': 'Team',
+        'entries': json_data
+    })
+
+
 """ CREATE VIEW QUERY """
 
+
+@queries.route('/create_view_query', methods=['GET'])
+@gzipped
+def create_view():
+    """Manager Performance view -
+        - Only care about Name, position and current stats
+    """
+
+    tb_exists = "SELECT count(*) FROM sqlite_master WHERE type='view' AND name='AthletePerformanceView'"
+    row = db.engine.execute(tb_exists)
+    if str(row.fetchone()) == '(1,)':
+        print("Create View already created")
+
+    else:
+        sql = text('''CREATE VIEW AthletePerformanceView AS
+                    SELECT Athlete.Name, Athlete.Position, Athlete.Goals, Athlete.Assists, Athlete.Wins, Athlete.Losses
+                    FROM Athlete''')
+        db.engine.execute(sql)
+
+    qry_view = text('''SELECT * FROM AthletePerformanceView''')         # View Table
+    rows = db.engine.execute(qry_view)
+    json_data = [list(row) for row in rows]
+
+    return jsonify({
+        'code': 200,
+        'query_type': 'CREATE VIEW',
+        'entries': json_data
+    })

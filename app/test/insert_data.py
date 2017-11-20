@@ -1,5 +1,6 @@
 from app.db.database import Athlete, Coach, Competition, Game, Season, Stadium, Team, db
 from sqlalchemy import text
+from sqlite3 import OperationalError
 
 
 def insert(query_table):
@@ -50,7 +51,7 @@ def delete_data():
 def update_data():
     main_pk = 238           # Lionel Messi = 238 id
 
-    sql = text('''UPDATE Athlete SET salary=999999 WHERE name="Lionel Messi"''')              # shouldnt be a string
+    sql = text('''UPDATE Athlete SET salary=999999 WHERE name="Lionel Messi" AND id=238''')              # shouldnt be a string
     db.engine.execute(sql)
 
     lionel_update = db.session.query(Athlete).get(main_pk)
@@ -126,3 +127,40 @@ def join_2_query1():
 # join_2_query1()
 # join_3_query()
 # join_2_query2()
+
+def createview():
+    """Manager view - only care about player stats and position played. Name, age (DOB), place of birth
+        & salary should not be accounted for when making team play decisions.
+    """
+
+    tb_exists = "SELECT count(*) FROM sqlite_master WHERE type='view' AND name='AthletePerformanceView'"
+    row = db.engine.execute(tb_exists)
+    if str(row.fetchone()) == '(1,)':
+        print("Create View already created")
+
+    else:
+        sql = text('''CREATE VIEW AthletePerformanceView AS
+                    SELECT Athlete.Goals, Athlete.Assists, Athlete.Wins, Athlete.Losses, Athlete.Position
+                    FROM Athlete''')
+        db.engine.execute(sql)
+
+    qry_view = text('''SELECT * FROM AthletePerformanceView''')
+    rows = db.engine.execute(qry_view)
+    a_data = [list(row) for row in rows]
+    print(a_data)
+
+# createview()
+
+
+def insert_new():
+    t_name = "Test"
+    t_loc = "France"
+    table = 'Team (teamID, location, dateCreated, goals, assists, wins, losses)'
+    vals = 'VALUES ("' + t_name + '", "' + t_loc + '", "2018-01-01", 168, 153, 55, 20)'
+
+    row = db.session.query(Team).filter_by(teamID=t_name).count()
+    print(row)
+    # sql = text('''INSERT INTO ''' + table + vals)
+    # db.engine.execute(sql)
+
+insert_new()

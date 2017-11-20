@@ -2,7 +2,7 @@ import collections
 from sqlalchemy import text
 
 
-"""SELECT Query Helpers """
+""" SELECT Query Helpers """
 
 
 def select_athlete_table(data):
@@ -81,7 +81,7 @@ def select_groupby_table(data):
     return json_data
 
 
-"""JOIN Query Helpers """
+""" JOIN Query Helpers """
 
 
 def join_2_query1():

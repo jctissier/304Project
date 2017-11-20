@@ -49,7 +49,7 @@ function view_tables(tname){
         }
     })
             .done(function (response) {
-                demo.showNotification("Viewing all rows in DB Table: " + tname, "danger");
+                demo.showNotification("Viewing rows in DB Table: " + tname, "danger");
                 $('#response-json').text(JSON.stringify(response.entries, undefined, 4));
                 $('#db_table_insertion_headers').html(db_table_headers(response.headers));
                 $('#db_table_insertion_body').html(db_table_vars(response.entries));
@@ -79,101 +79,6 @@ function db_table_headers(jsonData) {
     }
 
     return headers + '</tr>';
-}
-
-
-
-/**
- * SELECT queries
- */
-
-function hide_select(){
-    $('#select-content').hide();        // main content
-    $('#select_query_athlete').hide();
-    $('#select_query_coach').hide();
-    $('#select_query_team').hide();
-}
-
-function select_queries(tname){
-    hide_select();
-    $.ajax({
-        type: 'POST',
-        url: '/select_query',
-        data: {
-            table_name: tname
-        }
-    })
-            .done(function (response) {
-                demo.showNotification("SELECT query completed", "danger");
-                $('#select-content').show();
-                $('#response-json').text(JSON.stringify(response.entries, undefined, 4));
-                $('#select_table_insertion').html(select_table_vars(response, tname));
-            });
-}
-
-function select_table_vars(jsonData, tname){
-    jsonData = jsonData['entries'];
-
-    var html = get_select_table_headers(tname) + '<tbody>';
-    for (var key in jsonData) {
-        if (jsonData.hasOwnProperty(key)) {
-            html += '<tr>' + get_select_table_keys(jsonData, key, tname) + '</tr>';
-        }
-    }
-    html += '</tbody>';
-
-    return html;
-}
-
-function get_select_table_keys(jsonData, loop, tname){
-    var a_keys;
-    if (isEqual(tname, "Athlete")){a_keys = ["name", "countryID", "dob", "placeOfBirth", "salary", "status", "goals", "assists", "wins", "losses"]}
-    else if (isEqual(tname, "Team")){a_keys = ["name", "location", "dateCreated", "goals", "assists", "wins", "losses"]}
-    else if (isEqual(tname, "Coach")){a_keys = ["name", "salary", "dob", "status", "placeOfBirth", "countryID"]}
-
-    var a_html = "";
-    for (var k=0; k<a_keys.length; k++){
-        a_html += '<td>' + jsonData[loop][0][a_keys[k]] + '</td>';
-    }
-    return a_html;
-}
-
-function get_select_table_headers(tname){
-    if (tname === "Athlete") {
-        return '<thead class="text-danger">' +
-                    '<th>Name</th>' +
-                    '<th>Country</th>' +
-                    '<th>Date of Birth</th>' +
-                    '<th>Place of Birth</th>' +
-                    '<th>Salary</th>' +
-                    '<th>Status</th>' +
-                    '<th>Goals</th>' +
-                    '<th>Assists</th>' +
-                    '<th>Wins</th>' +
-                    '<th>Losses</th>' +
-                '</thead>';
-    }
-    else if (tname === "Team"){
-        return '<thead class="text-danger">' +
-                    '<th>Team ID</th>' +
-                    '<th>Location</th>' +
-                    '<th>Date Created</th>' +
-                    '<th>Goals</th>' +
-                    '<th>Assists</th>' +
-                    '<th>Wins</th>' +
-                    '<th>Losses</th>' +
-                '</thead>';
-    }
-    else if (tname === "Coach"){
-        return '<thead class="text-danger">' +
-                    '<th>Name</th>' +
-                    '<th>Salary</th>' +
-                    '<th>Date of Birth</th>' +
-                    '<th>Place of Birth</th>' +
-                    '<th>Status</th>' +
-                    '<th>CountryID</th>' +
-                '</thead>';
-    }
 }
 
 
@@ -253,7 +158,7 @@ function insert_queries(tname){
     var isFilledIn = check_dropdown_vals_insert(tname);
     if (isFilledIn) {
 
-        hide_insert(tname);           // todo
+        hide_insert(tname);
 
         $.ajax({
             type: 'POST',
@@ -346,7 +251,7 @@ function get_insert_table_headers(tname){
  *      - delete team
  */
 var delete_sName = "";
-var delete_sLocation = "";          // This needs to be set based on Stadium Name
+var delete_sLocation = "";
 var delete_teamID = "";
 
 
@@ -410,7 +315,7 @@ function delete_queries(tname){
     var isFilledIn = check_dropdown_vals_delete(tname);
     if (isFilledIn) {
 
-        hide_delete(tname);           // todo
+        hide_delete(tname);
 
         $.ajax({
             type: 'POST',
@@ -453,7 +358,6 @@ function delete_table_vars(jsonData, tname){
 }
 
 function get_delete_table_headers(tname){
-    // TODO - fix this when
     if (isEqual(tname, "Stadium")) {
         return '<thead class="text-danger">' +
                     '<th>Name</th>' +
@@ -481,48 +385,123 @@ function hide_delete(tname){
 }
 
 /**
- * GROUP BY Query
+ * UPDATE Query
  */
+var update_name = "";
+var update_salary = $('#update-salary').val();
+var update_country = $('#update-country').val();
 
-function groupby_query(){
-    $.ajax({
-            type: 'GET',
-            url: '/groupby_query'
-        })
-            .done(function (response) {
-                demo.showNotification("GROUP BY query completed", "danger");
-                $('#groupby-content').show();
-                $('#response-json').text(JSON.stringify(response, undefined, 4));
-                $('#groupby_table_insertion_team').html(groupby_table_vars(response.entries));
+var btn_salary = 0;
 
-            });
+function update_show(num){
+    $('#update-div').show();
+    if (num === 1){
+        $('#update-salary-text').show();
+        $('#update-country-text').hide();
+        $('#update-country').val("");
+        btn_salary = true;
+    }
+    else if (num === 2){
+        $('#update-salary-text').hide();
+        $('#update-country-text').show();
+        $('#update-salary').val("");
+        btn_salary = false;
+    }
 }
 
-function groupby_table_vars(jsonData){
-    var html = get_groupby_table_headers() + '<tbody>';
 
+function update_dropdown(val){
+    if (val !== update_name) {
+        if (update_name !== "") {
+            $('#' + update_name).remove();
+        }
+        update_name = val;
+        add_dropdown_icon(val, "update");
+    }
+}
+
+function check_dropdown_vals_update(){
+    if (update_name === ""){
+        demo.showNotification("Player to update has not been selected", "info");
+        return false;
+    }
+    if ($('#update-salary').val() === "" && btn_salary === true){
+        demo.showNotification("New Player Salary is blank", "info");
+        return false;
+    }
+    if ($('#update-country').val() === "" && btn_salary === false){
+        demo.showNotification("New Player Country is blank", "info");
+        return false;
+    }
+    return true;
+}
+
+function update_query(){
+    var num = 0;
+    var qry_url = "update_player_stats";
+    if ($('#update-country').val() === "" && $('#update-salary').val() !== ""){
+        num = 1;
+    }
+    else if ($('#update-country').val() !== "" && $('#update-salary').val() === ""){
+        num = 2;
+        qry_url = "update_player_country";
+    }
+
+
+    var isFilledIn = check_dropdown_vals_update();
+    if (isFilledIn) {
+
+        $.ajax({
+            type: 'GET',
+            url: '/' + qry_url,
+            data: {
+                player_name: update_name,
+                new_salary: $('#update-salary').val(),
+                new_country: $('#update-country').val()
+            }
+        })
+            .done(function (response) {
+                demo.showNotification("UPDATE query completed", "danger");
+                $('#update-content').show();
+                $('#response-json').text(JSON.stringify(response, undefined, 4));
+                $('#update_table_insertion_headers').html(get_update_table_headers(), num);
+                $('#update_table_insertion_body').html(update_table_vars(response.entries));
+
+            });
+    }
+}
+
+function update_table_vars(jsonData){
+    var html = '';
     for (var key in jsonData) {
         if (jsonData.hasOwnProperty(key)) {
             html += '<tr>';
-
-            for (var i=0; i<jsonData[key].length; i++){
-                html += '<td>' + jsonData[key][i]['Team ID'] + '</td>';
-                html += '<td>' + jsonData[key][i]['Number Players'] + '</td>';
+            for (var i = 0; i < jsonData[key].length; i++) {
+                html += '<td>' + jsonData[key][i] + '</td>';
             }
             html += '<tr>';
         }
     }
-    html += '</tbody>';
 
     return html;
 }
 
-function get_groupby_table_headers(){
-    return '<thead class="text-danger">' +
-                '<th>Team ID</th>' +
-                '<th>Number of Players</th>' +
-            '</thead>';
+function get_update_table_headers(num){
+    if (num === 1){
+        return  '<tr>' +
+                '<th>Athlete Name</th>' +
+                '<th>Athlete Salary</th>' +
+            '</tr>';
+    }
+    else if (num === 2){
+        return  '<tr>' +
+                '<th>Athlete Name</th>' +
+                '<th>Athlete Country</th>' +
+            '</tr>';
+    }
+
 }
+
 
 
 /**
@@ -538,7 +517,7 @@ function join_query(num){
             }
         })
             .done(function (response) {
-                demo.showNotification("GROUP BY query completed", "danger");
+                demo.showNotification("JOIN query completed", "danger");
                 $('#join-content').show();
                 $('#response-json').text(JSON.stringify(response, undefined, 4));
                 $('#join_table_insertion_headers').html(get_join_table_headers(num));
@@ -587,4 +566,96 @@ function get_join_table_headers(num){
                     '<th>Athlete Salary</th>' +
                 '</tr>';
     }
+}
+
+
+/**
+ * GROUP BY Query
+ */
+
+function groupby_query(){
+    $.ajax({
+            type: 'GET',
+            url: '/groupby_query'
+        })
+            .done(function (response) {
+                demo.showNotification("GROUP BY query completed", "danger");
+                $('#groupby-content').show();
+                $('#response-json').text(JSON.stringify(response, undefined, 4));
+                $('#groupby_table_insertion_team').html(groupby_table_vars(response.entries));
+
+            });
+}
+
+function groupby_table_vars(jsonData){
+    var html = get_groupby_table_headers() + '<tbody>';
+
+    for (var key in jsonData) {
+        if (jsonData.hasOwnProperty(key)) {
+            html += '<tr>';
+
+            for (var i=0; i<jsonData[key].length; i++){
+                html += '<td>' + jsonData[key][i]['Team ID'] + '</td>';
+                html += '<td>' + jsonData[key][i]['Number Players'] + '</td>';
+            }
+            html += '<tr>';
+        }
+    }
+    html += '</tbody>';
+
+    return html;
+}
+
+function get_groupby_table_headers(){
+    return '<thead class="text-danger">' +
+                '<th>Team ID</th>' +
+                '<th>Number of Players</th>' +
+            '</thead>';
+}
+
+
+/**
+ * CREATE VIEW Query
+ */
+
+function create_view_query(){
+    $.ajax({
+            type: 'GET',
+            url: '/create_view_query'
+        })
+            .done(function (response) {
+                demo.showNotification("CREATE VIEW query completed", "danger");
+                $('#create-view-content').show();
+                $('#response-json').text(JSON.stringify(response, undefined, 4));
+                $('#create_view_headers').html(get_create_view_headers());
+                $('#create_view_body').html(create_view_vars(response.entries));
+
+            });
+}
+
+function create_view_vars(jsonData){
+    var html = '';
+    for (var key in jsonData) {
+        if (jsonData.hasOwnProperty(key)) {
+            html += '<tr>';
+            for (var i = 0; i < jsonData[key].length; i++) {
+                html += '<td>' + jsonData[key][i] + '</td>';
+            }
+            html += '<tr>';
+        }
+    }
+
+    return html;
+}
+
+function get_create_view_headers(){
+
+    return  '<tr>' +
+                '<th>Athlete Name</th>' +
+                '<th>Athlete Position</th>' +
+                '<th>Athlete Goals</th>' +
+                '<th>Athlete Assists</th>' +
+                '<th>Athlete Wins</th>' +
+                '<th>Athlete Losses</th>' +
+            '</tr>';
 }
