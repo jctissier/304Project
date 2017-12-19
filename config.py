@@ -10,11 +10,11 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 # Choose your environment, then uncomment which database you want to work with
 # Mac
 # SQLALCHEMY_DATABASE_URI = 'sqlite://///' + os.path.join(basedir, 'testData.sqlite3')
-# SQLALCHEMY_DATABASE_URI = 'sqlite://///' + os.path.join(basedir, 'Data.sqlite3')
+# SQLALCHEMY_DATABASE_URI = 'sqlite://///' + os.path.join(basedir, 'private/Data.sqlite3')
 
 # WINDOWS
 #SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'testData.sqlite3')
-#SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'Data.sqlite3')
+#SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'private/Data.sqlite3')
 
 # TestDB
 
