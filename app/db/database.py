@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask import Blueprint
+import enums
 from app import app
 
 
@@ -11,147 +12,107 @@ db_setup = Blueprint('dbsetup', __name__)
 db = SQLAlchemy(app)
 
 
-class Athlete(db.Model):
+class Shooter(db.Model):
     """
-    Create database table to store Athlete table  data
+    Create database table to store Shooter table data
+    Shooter ISA Member or DropIn
     """
-    __tablename__ = 'Athlete'
+    __tablename__ = 'Shooter'
 
-    id = db.Column('id', db.Integer, primary_key=True)
-    salary = db.Column('salary', db.Integer)
-    name = db.Column('name', db.String(100))
-    dob = db.Column('dob', db.Date)
-    status = db.Column('status', db.String(100))
-    placeOfBirth = db.Column('placeOfBirth', db.String(100))
-    countryID = db.Column('countryID', db.String(100))
-    teamID = db.Column('teamID', db.String, db.ForeignKey('team.teamID'))
-    goals = db.Column('goals', db.Integer)
-    assists = db.Column('assists', db.Integer)
-    wins = db.Column('wins', db.Integer)
-    losses = db.Column('losses', db.Integer)
-    position = db.Column('position', db.String(50))
+    sid = db.Column('sid', db.Integer, primary_key=True)
+    name = db.Column('name', db.String(100), nullable=False)
 
-    def __init__(self, id, salary, name, dob, status, placeOfBirth, countryID, teamID, goals, assists, wins, losses, position):
-        self.id = id
-        self.salary = salary
+    def __init__(self, sid, name):
+        self.sid = sid
         self.name = name
-        self.dob = dob
+
+
+class Member(db.Model):
+    """
+    ISA Shooter
+    """
+    __tablename__ = 'Member'
+
+    mid = db.Column('mid', db.Integer, primary_key=True)
+    sid = db.Column('sid', db.Integer, db.ForeignKey('Shooter.sid'))
+    status = db.Column('status', db.Enum(enums.Status), nullable=False)
+    pal = db.Column('pal', db.Enum(enums.Pal), nullable=False)
+    email = db.Column('email', db.String(100))
+    ubcID = db.Column('UBCid', db.String(15)) #no need to pad 0s
+    phone = db.Column('phone', db.String(15)) #international numbers, no need to pad 0s
+    startDate = db.Column('startDate', db.Date, nullable=False)
+    endDate = db.Column('endDate', db.Date)
+
+    def __init__(self, mid, sid, status, pal, email, ubcID, phone, startDate, endDate):
+        self.mid = mid
+        self.sid = sid
         self.status = status
-        self.placeOfBirth = placeOfBirth
-        self.countryID = countryID
-        self.teamID = teamID
-        self.goals = goals
-        self.assists = assists
-        self.wins = wins
-        self.losses = losses
-        self.position = position
+        self.pal = pal
+        self.email = email
+        self.ubcID = ubcID
+        self.phone = phone
+        self.startDate = startDate
+        self.endDate = endDate
 
 
-class Coach(db.Model):
-    __tablename__ = 'Coach'
+class DropIn(db.Model):
+    """
+    ISA Shooter
+    """
+    __tablename__ = 'DropIn'
 
-    id = db.Column('id', db.Integer, primary_key=True)
-    salary = db.Column('salary', db.Integer)
-    name = db.Column('name', db.String(100))
-    dob = db.Column('dob', db.Date)
-    status = db.Column('status', db.String(100))
-    placeOfBirth = db.Column('placeOfBirth', db.String(100))
-    countryID = db.Column('countryID', db.String(100))
-    teamID = db.Column('teamID', db.String, db.ForeignKey('team.teamID'))
+    did = db.Column('did', db.Integer, primary_key=True)
+    sid = db.Column('sid', db.Integer, db.ForeignKey('Shooter.sid'))
 
-    def __init__(self, id, salary, name, dob, status, placeOfBirth, countryID, teamID):
-        self.id = id
-        self.salary = salary
+    def __init__(self, did, sid):
+        self.did = did
+        self.sid = sid
+
+
+class Match(db.Model):
+    __tablename__ = 'Match'
+
+    mid = db.Column('mid', db.Integer, primary_key=True)
+    name = db.Column('name', db.String(100), nullable=False)
+    date = db.Column('date', db.Date, nullable=False)
+    isDQ = db.Column('isDQ', db.Boolean, nullable=False)
+
+    def __init__(self, mid, name, date, isDQ):
+        self.mid = mid
         self.name = name
-        self.dob = dob
-        self.status = status
-        self.placeOfBirth = placeOfBirth
-        self.countryID = countryID
-        self.teamID = teamID
+        self.date = date
+        self.isDQ = isDQ
 
 
-class Competition(db.Model):
-    __tablename__ = 'Competition'
+class Competitor(db.Model):
+    __tablename__ = 'Competitor'
 
-    name = db.Column('name', db.String(100), primary_key=True)
-    winner = db.Column('winner', db.String(100))
-    comp_type = db.Column('compType', db.String(100))
+    sid = db.Column('sid', db.Integer, db.ForeignKey('Shooter.sid'), primary_key=True)
+    mid = db.Column('mid', db.Integer, db.ForeignKey('Match.id'), primary_key=True)
+    division = db.Column('division', db.Enum(enums.Division), nullable=False)
 
-    def __init__(self, name, winner, type):
-        self.name = name
-        self.winner = winner
-        self.comp_type = type
-
-
-class Game(db.Model):
-    __tablename__ = 'Game'
-
-    score = db.Column('score', db.String(100))
-    gameID = db.Column('gameID', db.Integer, primary_key=True)
-    winningTeamID = db.Column('winningTeamID', db.Integer, db.ForeignKey('team.teamID'))
-    losingTeamID = db.Column('losingTeamID', db.Integer, db.ForeignKey('team.teamID'))
-    competitionID = db.Column('competitionID', db.Integer, db.ForeignKey('competition.name'))
-    seasonID = db.Column('stadiumID', db.Integer, db.ForeignKey('season.seasonID'))
-
-    def __init__(self, score, gameID, winngingTeamID, losingTeamID, seasonID):
-        self.score = score
-        self.gameID = gameID
-        self.winningTeamID = winngingTeamID
-        self.losingTeamID = losingTeamID
-        self.seasonID = seasonID
+    def __init__(self, sid, mid, division):
+        self.sid = sid
+        self.mid = mid
+        self.division = division
 
 
-class GameGoal(db.Model):
-    __tablename__ = 'GameGoal'
+class Stage(db.Model):
+    __tablename__ = 'Stage'
 
-    gameID = db.Column('gameID', db.Integer, db.ForeignKey('game.gameID'), primary_key=True)
-    athleteID = db.Column('id', db.Integer, db.ForeignKey('athlete.id'), nullable=False)
-    name = db.Column('name', db.String(100))
+    stageid = db.Column('stageid', db.Integer, primary_key=True)
+    mid = db.Column('mid', db.ForeignKey(Match.mid), primary_key=True)
+    s1 = db.Column('s1', db.Numeric) #need to support to 2 decimal spaces example: 5.23s
+    s2 = db.Column('s2', db.Numeric)
+    s3 = db.Column('s3', db.Numeric)
+    s4 = db.Column('s4', db.Numeric)
+    s5 = db.Column('s5', db.Numeric)
 
-    def __init__(self, gameID, athleteID, name):
-        self.gameID = gameID
-        self.athleteID = athleteID
-        self.name = name
-
-
-class Season(db.Model):
-    __tablename__ = 'Season'
-
-    seasonID = db.Column('seasonID', db.Integer, primary_key=True)
-    location = db.Column('location', db.String(100))
-
-    def __init__(self, seasonID, location):
-        self.seasonID = seasonID
-        self.location = location
-
-
-class Stadium(db.Model):
-    __tablename__ = 'Stadium'
-
-    name = db.Column('name', db.String(100), primary_key=True)
-    location = db.Column('location', db.String(100), primary_key=True)
-
-    def __init__(self, name, location):
-        self.name = name
-        self.location = location
-
-
-class Team(db.Model):
-    __tablename__ = 'Team'
-
-    teamID = db.Column('teamID', db.String, primary_key=True)
-    location = db.Column('location', db.String(100))
-    dateCreated = db.Column('dateCreated', db.Date)
-    goals = db.Column('goals', db.Integer)
-    assists = db.Column('assists', db.Integer)
-    wins = db.Column('wins', db.Integer)
-    losses = db.Column('losses', db.Integer)
-
-    def __init__(self, teamID, location, dateCreated, goals, assists, wins, losses):
-        self.teamID = teamID
-        self.location = location
-        self.dateCreated = dateCreated
-        self.goals = goals
-        self.assists = assists
-        self.wins = wins
-        self.losses = losses
+    def __init__(self, stageid, mid, s1, s2, s3, s4, s5):
+        self.stageid = stageid
+        self.mid = mid
+        self.s1 = s1
+        self.s2 = s2
+        self.s3 = s3
+        self.s4 = s4
+        self.s5 = s5

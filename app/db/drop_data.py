@@ -1,6 +1,6 @@
 from app.db.database import db
 
-tables = ['GameGoal', 'Athlete', 'Coach', 'Competition', 'Game', 'Season', 'Stadium', 'Team']
+tables = ['Shooter', 'Member', 'DropIn', 'Match', 'Competitor', 'Stage']
 
 
 def drop():

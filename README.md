@@ -1,6 +1,6 @@
-# :soccer: Football Stats Database :soccer:
-## A CPSC304 project
-### by Issac Ahouma, Edward Cai, Gary Gao, Jean-Claude Tissier
+# AMS Shooting Sports at UBC
+## Club website - membership tracking and scoring
+### by Edward Cai - forked off of CPSC304 project
 
 ### Requirements
 - Python 3.5 and later
