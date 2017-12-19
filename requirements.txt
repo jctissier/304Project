@@ -20,6 +20,7 @@ urllib3==1.21.1
 APScheduler==3.0.0
 sqlalchemy
 flask_sqlalchemy
+flask_security
 python-dateutil
 numpy
 pandas
