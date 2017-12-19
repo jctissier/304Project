@@ -103,4 +103,4 @@ ENV/
 #IDE config files
 .idea/
 
-Data.sqlite3 #private data
+Data.sqlite3/
