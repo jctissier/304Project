@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask import Blueprint
-import enums
+import enum
 from app import app
 
 
@@ -10,6 +10,27 @@ db_setup = Blueprint('dbsetup', __name__)
 
 # Create database instance
 db = SQLAlchemy(app)
+
+
+class Status(enum.Enum):
+    ACTIVE = 'active'
+    ASSOCIATE = 'associate'
+    EXPIRED = 'expired'
+
+
+class Pal(enum.Enum):
+    NONE = ''
+    NR = 'NR'
+    R = 'R'
+
+
+class Division(enum.Enum):
+    OPEN = 'open'
+    STANDARD = 'standard'
+    CLASSIC = 'classic'
+    PRODUCTION = 'production'
+    REVOLVER = 'revolver'
+    PRODUCTION_OPTICS = 'production optics'
 
 
 class Shooter(db.Model):
@@ -35,13 +56,13 @@ class Member(db.Model):
 
     mid = db.Column('mid', db.Integer, primary_key=True)
     sid = db.Column('sid', db.Integer, db.ForeignKey('Shooter.sid'))
-    status = db.Column('status', db.Enum(enums.Status), nullable=False)
-    pal = db.Column('pal', db.Enum(enums.Pal), nullable=False)
+    status = db.Column('status', db.Enum(Status), nullable=False)
+    pal = db.Column('pal', db.Enum(Pal), nullable=False)
     email = db.Column('email', db.String(100))
     ubcID = db.Column('UBCid', db.String(15)) #no need to pad 0s
     phone = db.Column('phone', db.String(15)) #international numbers, no need to pad 0s
     startDate = db.Column('startDate', db.Date, nullable=False)
-    endDate = db.Column('endDate', db.Date)
+    endDate = db.Column('endDate', db.Date, nullable=False)
 
     def __init__(self, mid, sid, status, pal, email, ubcID, phone, startDate, endDate):
         self.mid = mid
@@ -89,7 +110,7 @@ class Competitor(db.Model):
 
     sid = db.Column('sid', db.Integer, db.ForeignKey('Shooter.sid'), primary_key=True)
     mid = db.Column('mid', db.Integer, db.ForeignKey('Match.id'), primary_key=True)
-    division = db.Column('division', db.Enum(enums.Division), nullable=False)
+    division = db.Column('division', db.Enum(Division), nullable=False)
 
     def __init__(self, sid, mid, division):
         self.sid = sid
