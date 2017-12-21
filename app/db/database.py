@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask import Blueprint
-import enum
 from app import app
+from app.db.enums import Status, Pal, Division
 
 
 # Define the blueprint: 'highlights', set its url prefix: app.url/highlights
@@ -10,27 +10,6 @@ db_setup = Blueprint('dbsetup', __name__)
 
 # Create database instance
 db = SQLAlchemy(app)
-
-
-class Status(enum.Enum):
-    ACTIVE = 'active'
-    ASSOCIATE = 'associate'
-    EXPIRED = 'expired'
-
-
-class Pal(enum.Enum):
-    NONE = ''
-    NR = 'NR'
-    R = 'R'
-
-
-class Division(enum.Enum):
-    OPEN = 'open'
-    STANDARD = 'standard'
-    CLASSIC = 'classic'
-    PRODUCTION = 'production'
-    REVOLVER = 'revolver'
-    PRODUCTION_OPTICS = 'production optics'
 
 
 class Shooter(db.Model):
