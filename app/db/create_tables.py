@@ -23,23 +23,28 @@ def create():
                           sid INT)''')
 
     db.engine.execute('''CREATE TABLE Match (
-                          mid INT ,
+                          matchid INT ,
                           name VARCHAR ,
-                          date DATE ,
-                          isDQ BOOLEAN)''')
+                          date DATE)''')
 
     db.engine.execute('''CREATE TABLE Competitor (
                             sid INT ,
-                            mid INT,
-                            division VARCHAR)''')
+                            matchid INT,
+                            division VARCHAR,
+                            isDQ BOOLEAN)''')
 
     db.engine.execute('''CREATE TABLE Stage (
                           stageid INT ,
-                          mid INT ,
-                          s1 NUMERIC ,
-                          s2 NUMERIC ,
-                          s3 NUMERIC ,
-                          s4 NUMERIC ,
-                          s5 NUMERIC)''')
+                          matchid INT)''')
+
+    db.engine.execute('''CREATE TABLE Score (
+                            sid INT,
+                            matchid INT,
+                            stageid INT,
+                            s1 NUMERIC,
+                            s2 NUMERIC,
+                            s3 NUMERIC,
+                            s4 NUMERIC,
+                            s5 NUMERIC)''')
 
     print("Tables have been created\n")
