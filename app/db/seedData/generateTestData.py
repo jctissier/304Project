@@ -37,9 +37,9 @@ def make():
     seedSize = len(data)
     print("Size of name seed input: " + str(seedSize))
 
-    #Shooter table
     shooters = pd.DataFrame()
     members = pd.DataFrame()
+    dropIn = pd.DataFrame()
 
     shooters_names = []
     shooters_sid = [] #foreignKey
@@ -50,24 +50,33 @@ def make():
     members_phone = []
     members_startDate = []
     members_endDate = []
+    dropIn_did = []
 
     for x in range(rowNumbers):
         i = random.randint(0, seedSize)
         name = data[i]
         shooters_names.append(name)
         shooters_sid.append(random.randint(0, seedSize))
-        members_mid.append(random.randint(0, seedSize))
-        members_status.append(random.choice(list(Status)).name)
-        members_email.append(name + "@gmail.com")
-        members_ubcID.append(random.randint(10000000, 99999999))
-        members_phone.append(random.randint(1000000000, 9999999999))
-        members_startDate.append([randomDate("1/1/2014", "1/1/2016", random.random())])
-        print(datetime.combine(members_startDate[len(members_startDate)-1], datetime.now()))
-        # members_endDate.append(
-        #     datetime.combine(members_startDate[len(members_startDate)-1], time(hours=0)) + timedelta(days=365))
+
+        if random.random() < 100:
+            members_mid.append(random.randint(0, seedSize))
+            members_status.append(random.choice(list(Status)).name)
+            members_email.append(name + "@gmail.com")
+            members_ubcID.append(random.randint(10000000, 99999999))
+            members_phone.append(random.randint(1000000000, 9999999999))
+            startTimeStr = randomDate("1/1/2014", "1/1/2016", random.random())
+            startTimeDate = datetime.strptime(startTimeStr, '%m/%d/%Y')
+            members_startDate.append(startTimeStr)
+            endTimeDate = startTimeDate + timedelta(days=360)
+            endTimeDateStr = (endTimeDate.date().strftime('%m/%d/%Y'))
+            members_endDate.append(endTimeDateStr)
+
+        else:
+            dropIn_did.append(random.randint(0, seedSize))
 
     shooters['name'] = shooters_names
     shooters['sid'] = shooters_sid
+
     members['mid'] = members_mid
     members['sid'] = shooters['sid']
     members['status'] = members_status
@@ -75,10 +84,13 @@ def make():
     members['ubcID'] = members_ubcID
     members['phone'] = members_phone
     members['startDate'] = members_startDate
-    # members['endDate'] = members_endDate
+    members['endDate'] = members_endDate
+    dropIn['did'] = dropIn_did
+    dropIn['sid'] = shooters['sid']
 
     print(shooters)
     print(members)
+    print(dropIn)
 
 
 
