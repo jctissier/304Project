@@ -45,28 +45,39 @@ def make():
     dropIns = pd.DataFrame()
     competitors = pd.DataFrame()
     matches = pd.DataFrame()
+    stages = pd.DataFrame()
     scores = pd.DataFrame()
 
     shooters_names = []
     shooters_sid = []
+
     members_sid = []
     members_mid = []
     members_status = []
+    members_pal = []
     members_email = []
     members_ubcID = []
     members_phone = []
     members_startDate = []
     members_endDate = []
+
     dropIn_sid = []
     dropIn_did = []
+
     competitor_sid = []
     competitor_division = []
     competitor_isdq = []
+
     matchid = []
     matches_name = []
     matches_date = []
+
+    stages_stageid = []
+    stages_matchid = []
+
     scores_sid = []
     scores_matchid = []
+    scores_stageid = []
     scores_str1 = []
     scores_str2 = []
     scores_str3 = []
@@ -87,6 +98,7 @@ def make():
             members_sid.append(sid)
             members_mid.append(random.randint(0, seedSize))
             members_status.append(random.choice(list(Status)).name)
+            members_pal.append(random.choice(list(Pal)).name)
             members_email.append(shooters_names[nameIndex] + "@gmail.com")
             members_ubcID.append(random.randint(10000000, 99999999))
             members_phone.append(random.randint(1000000000, 9999999999))
@@ -113,20 +125,25 @@ def make():
 
     shooters['sid'] = shooters_sid
     shooters['name'] = shooters_names
+
     members['sid'] = members_sid
     members['mid'] = members_mid
     members['status'] = members_status
+    members['pal'] = members_pal
     members['email'] = members_email
     members['ubcID'] = members_ubcID
     members['phone'] = members_phone
     members['startDate'] = members_startDate
     members['endDate'] = members_endDate
+
     dropIns['sid'] = dropIn_sid
     dropIns['did'] = dropIn_did
+
     competitors['sid'] = np.random.choice(shooters_sid, SHOOTER_COUNT, replace=True)
     competitors['matchid'] = matchid
     competitors['division'] = competitor_division
     competitors['isdq'] = competitor_isdq
+
     matches['matchid'] = sorted(list(set(matchid)))
     matches['name'] = sorted(list(set(matches_name)))
     matches['date'] = matches_date
@@ -137,8 +154,45 @@ def make():
     competitors = competitors.sort_values('sid', 0, True, False, 'quicksort', 'last')
     matches = matches.sort_values('matchid', 0, True, False, 'quicksort', 'last')
 
-    for shooterInMatch in competitors['sid']:
-        print(shooterInMatch)
+    # for shooterInMatch in competitors['sid']:
+    #     print(shooterInMatch)
+
+    #each match gets 5 stages
+    for row in matches.itertuples():
+        # print(getattr(row, 'matchid'))
+        stageCount = 1
+        while stageCount <= 5:
+            stages_matchid.append(getattr(row, 'matchid'))
+            stages_stageid.append(stageCount)
+            stageCount += 1
+
+    stages['stageid'] = stages_stageid
+    stages['matchid'] = stages_matchid
+
+    #each competitor gets scores in all stages in each match
+    for row in competitors.itertuples():
+        print(getattr(row, 'sid'))
+        print(getattr(row, 'matchid'))
+        stageCount = 1
+        while stageCount <= 5:
+            scores_sid.append(getattr(row, 'sid'))
+            scores_matchid.append(getattr(row, 'matchid'))
+            scores_stageid.append(stageCount)
+            scores_str1.append(random.randint(0, 5000)) #time in ms
+            scores_str2.append(random.randint(0, 5000))
+            scores_str3.append(random.randint(0, 5000))
+            scores_str4.append(random.randint(0, 5000))
+            scores_str5.append(random.randint(0, 5000))
+            stageCount += 1
+
+    scores['sid'] = scores_sid
+    scores['matchid'] = scores_matchid
+    scores['stageid'] = scores_stageid
+    scores['s1'] = scores_str1
+    scores['s2'] = scores_str2
+    scores['s3'] = scores_str3
+    scores['s4'] = scores_str4
+    scores['s5'] = scores_str5
 
     print("SHOOTER TABLE")
     print(shooters)
@@ -150,6 +204,10 @@ def make():
     print(competitors)
     print("MATCHES TABLE")
     print(matches)
+    print("STAGES TABLE")
+    print(stages)
+    print("SCORES TABLE")
+    print(scores)
 
 
 def toSqlTable(shooter, member, dropin, match, competitor, stage):
