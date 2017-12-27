@@ -1,4 +1,4 @@
-from app.db.database import Shooter, Member, DropIn, Match, Competitor, Stage, db
+from app.db.database import Shooter, Member, DropIn, Match, Competitor, Stage, Score, db
 from sqlalchemy import Column, Integer, Float, Date, String, VARCHAR
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
@@ -94,7 +94,6 @@ def make():
     nameIndex = 0
     for sid in shooters_sid:
         if random.random() < .7:
-            print(str(sid) + " member")
             members_sid.append(sid)
             members_mid.append(random.randint(0, seedSize))
             members_status.append(random.choice(list(Status)).name)
@@ -110,7 +109,6 @@ def make():
             members_endDate.append(endTimeDateStr)
             nameIndex += 1
         else:
-            print(str(sid) + " dropin")
             dropIn_sid.append(sid)
             dropIn_did.append(random.randint(0, seedSize))
             nameIndex += 1
@@ -171,8 +169,6 @@ def make():
 
     #each competitor gets scores in all stages in each match
     for row in competitors.itertuples():
-        print(getattr(row, 'sid'))
-        print(getattr(row, 'matchid'))
         stageCount = 1
         while stageCount <= 5:
             scores_sid.append(getattr(row, 'sid'))
@@ -209,14 +205,17 @@ def make():
     print("SCORES TABLE")
     print(scores)
 
+    toSqlTable(shooters, members, dropIns, matches, competitors, stages, scores)
 
-def toSqlTable(shooter, member, dropin, match, competitor, stage):
+
+def toSqlTable(shooter, member, dropin, match, competitor, stage, score):
     shooter.to_sql(con=db.engine, name=Shooter.__tablename__, if_exists='replace')
     member.to_sql(con=db.engine, name=Member.__tablename__, if_exists='replace')
     dropin.to_sql(con=db.engine, name=DropIn.__tablename__, if_exists='replace')
     match.to_sql(con=db.engine, name=Match.__tablename__, if_exists='replace')
     competitor.to_sql(con=db.engine, name=Competitor.__tablename__, if_exists='replace')
-    # stage.to_sql(con=db.engine, name=Stage.__tablename__, if_exists='replace')
+    stage.to_sql(con=db.engine, name=Stage.__tablename__, if_exists='replace')
+    score.to_sql(con=db.engine, name=Score.__tablename__, if_exists='replace')
 
 
 make()
