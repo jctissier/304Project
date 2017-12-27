@@ -1,12 +1,16 @@
 from app.util.util import gzipped
 from flask import Blueprint, request, render_template, jsonify
-from app.db.database import Shooter, Member, DropIn, Match, Competitor, Stage, db
+from app.db.database import Shooter, Member, DropIn, Match, Competitor, Stage, Score, db
 from sqlalchemy import text
+from sqlalchemy.orm.query import Query
+from sqlalchemy.orm.session import sessionmaker
 import app.queries.models as helper
 
 
 # Define the blueprint: 'queries'
 queries = Blueprint('queries', __name__)
+# global scope
+Session = sessionmaker(autoflush=False)
 
 
 @queries.route('/')
@@ -16,6 +20,93 @@ def load():
     Loads the HTML template
     """
     return render_template("dashboard.html")
+
+@queries.route('/db_tables', methods=['GET'])
+def get_tables():
+    """
+    Gets all rows for all tables
+    :return:
+    """
+    tables_map = {
+        "shooter": Shooter.__table__.columns.keys(),
+        "member": Member.__table__.columns.keys(),
+        "dropIn": DropIn.__table__.columns.keys(),
+        "match": Match.__table__.columns.keys(),
+        "competitor": Competitor.__table__.columns.keys(),
+        "stage": Stage.__table__.columns.keys(),
+        "score": Score.__table__.columns.keys()
+    }
+
+    table_name = request.args.get('table_name').lower()
+    available_tables = ['shooter', 'member', 'dropIn', 'match',
+                        'competitor', 'stage', 'score']
+
+    if table_name in available_tables:
+        sql = text("""SELECT * FROM """ + table_name)
+        rows = db.engine.execute(sql)
+
+        headers = tables_map[table_name]
+        data = [list(row[1:]) for row in rows]
+        return jsonify({
+            'code': 200,
+            'table': table_name,
+            'entries': data,
+            'headers': headers
+        })
+
+    else:
+        return jsonify({
+            'code': 400,
+            'error': 'Table Name was not valid'
+    })
+
+@queries.route('/member_expiry', methods =['GET'])
+def get_expiry():
+    """
+    Selects members with memberships expiring within a certain number
+    of months
+    :return:
+    """
+    tables_map = {
+        "member": Member.__table__.columns.keys()
+    }
+
+    time_frame = request.args.get('time_frame')
+    time_frame = int(time_frame)
+
+    if isinstance(time_frame, int):
+        if time_frame == 0:
+            # sql = text("""SELECT *
+            #               FROM member
+            #               WHERE endDate > 0""")
+            # rows = db.engine.execute(sql)
+            # data = [list(row[1:]) for row in rows]
+            sess = Session()
+            query = sess.query(Member)
+            data = {
+                'mid': Member.mid,
+                'sid': Member.sid,
+                'endDate': Member.endDate
+            }
+            jsonified_data = query.dump(data)
+            # data = Query.session(Member).filter(Member.endDate >= '12/26/2017')
+
+            return jsonify({
+                'code': 200,
+                'entries': jsonified_data
+                #todo: return expired members
+            })
+        else:
+            return jsonify({
+                'code': 200,
+                #todo: return members expiring in time_frame number of months
+            })
+    else:
+        return jsonify({
+            'code': 400,
+            'error': 'Not valid monthly time frame, should only be int'
+        })
+
 
 
 # """ SELECT QUERIES """
