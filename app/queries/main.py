@@ -1,16 +1,18 @@
 from app.util.util import gzipped
-from flask import Blueprint, request, render_template, jsonify
 from app.db.database import Shooter, Member, DropIn, Match, Competitor, Stage, Score, db
-from sqlalchemy import text
+from app.db.enums import Status, Pal, Division
+from flask import Blueprint, request, render_template, jsonify
+import datetime
+from sqlalchemy import create_engine, and_, text
 from sqlalchemy.orm.query import Query
 from sqlalchemy.orm.session import sessionmaker
-import app.queries.models as helper
+from dateutil.relativedelta import relativedelta
 
 
 # Define the blueprint: 'queries'
 queries = Blueprint('queries', __name__)
 # global scope
-Session = sessionmaker(autoflush=False)
+Session = sessionmaker(bind=db.engine)
 
 
 @queries.route('/')
@@ -63,50 +65,41 @@ def get_tables():
 @queries.route('/member_expiry', methods =['GET'])
 def get_expiry():
     """
-    Selects members with memberships expiring within a certain number
-    of months
-    :return:
+    Returns the membership IDs of memberships expiring within 'time_frame' amount of MONTHS
     """
-    tables_map = {
-        "member": Member.__table__.columns.keys()
-    }
 
     time_frame = request.args.get('time_frame')
-    time_frame = int(time_frame)
-
-    if isinstance(time_frame, int):
-        if time_frame == 0:
-            # sql = text("""SELECT *
-            #               FROM member
-            #               WHERE endDate > 0""")
-            # rows = db.engine.execute(sql)
-            # data = [list(row[1:]) for row in rows]
-            sess = Session()
-            query = sess.query(Member)
-            data = {
-                'mid': Member.mid,
-                'sid': Member.sid,
-                'endDate': Member.endDate
-            }
-            jsonified_data = query.dump(data)
-            # data = Query.session(Member).filter(Member.endDate >= '12/26/2017')
-
-            return jsonify({
-                'code': 200,
-                'entries': jsonified_data
-                #todo: return expired members
-            })
-        else:
-            return jsonify({
-                'code': 200,
-                #todo: return members expiring in time_frame number of months
-            })
-    else:
+    try:
+        time_frame = int(time_frame)
+    except ValueError as e:
+        print(e)
         return jsonify({
             'code': 400,
             'error': 'Not valid monthly time frame, should only be int'
         })
 
+    expiring_members = []
+    session = Session()
+    now = datetime.date.today()
+    relativeMonths = now - relativedelta(months=time_frame)
+    memberShooterTable = session.query(Member, Shooter) \
+        .join(Shooter) \
+        .filter(and_(Member.endDate > relativeMonths, Member.status != Status.EXPIRED))
+    print("Memberships expiring with " + str(time_frame) + " months")
+    for row in memberShooterTable:
+        print(row)
+        print(row.Member.email)
+        print(row.Shooter.name)
+        returnMember = {'name': row.Shooter.name,
+                        'mid': row.Member.mid,
+                        'email': row.Member.email,
+                        'endDate': row.Member.endDate}
+        expiring_members.append(returnMember)
+
+    return jsonify({
+        'code': 200,
+        'entries': expiring_members
+    })
 
 
 # """ SELECT QUERIES """

@@ -103,10 +103,11 @@ def make():
             members_phone.append(random.randint(1000000000, 9999999999))
             startTimeStr = randomDate("1/1/2014", "1/1/2016", random.random())
             startTimeDate = datetime.strptime(startTimeStr, '%m/%d/%Y')
-            members_startDate.append(startTimeStr)
-            endTimeDate = startTimeDate + timedelta(days=360)
-            endTimeDateStr = (endTimeDate.date().strftime('%m/%d/%Y'))
-            members_endDate.append(endTimeDateStr)
+            members_startDate.append(startTimeDate)
+            endTime = startTimeDate + timedelta(days=360)
+            endTimeDateStr = (endTime.date().strftime('%m/%d/%Y'))
+            endTimeDate = datetime.strptime(endTimeDateStr, '%m/%d/%Y')
+            members_endDate.append(endTimeDate)
             nameIndex += 1
         else:
             dropIn_sid.append(sid)
@@ -119,7 +120,9 @@ def make():
         matches_name.append("Match #" + str(matchid[len(matchid)-1]))
 
     for id in sorted(list(set(matchid))):
-        matches_date.append(randomDate("1/1/2014", "1/1/2016", random.random()))
+        matchDate = randomDate("1/1/2014", "1/1/2016", random.random())
+        matchDateDate = datetime.strptime(matchDate, '%m/%d/%Y')
+        matches_date.append(matchDateDate)
 
     shooters['sid'] = shooters_sid
     shooters['name'] = shooters_names

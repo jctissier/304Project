@@ -15,8 +15,8 @@ def create():
                           email VARCHAR,
                           ubcID VARCHAR,
                           phone VARCHAR,
-                          startDate DATE,
-                          endDate DATE)''')
+                          startDate DATETIME,
+                          endDate DATETIME)''')
 
     db.engine.execute('''CREATE TABLE DropIn (
                           did INT ,
@@ -25,7 +25,7 @@ def create():
     db.engine.execute('''CREATE TABLE Match (
                           matchid INT ,
                           name VARCHAR ,
-                          date DATE)''')
+                          date DATETIME)''')
 
     db.engine.execute('''CREATE TABLE Competitor (
                             sid INT ,
