@@ -3,8 +3,7 @@ from app.db.database import Shooter, Member, DropIn, Match, Competitor, Stage, S
 from app.db.enums import Status, Pal, Division
 from flask import Blueprint, request, render_template, jsonify
 import datetime
-from sqlalchemy import create_engine, and_, text
-from sqlalchemy.orm.query import Query
+from sqlalchemy import and_, text
 from sqlalchemy.orm.session import sessionmaker
 from dateutil.relativedelta import relativedelta
 
@@ -98,6 +97,7 @@ def get_expiry():
 
     return jsonify({
         'code': 200,
+        'table': 'Expiring Members',
         'entries': expiring_members
     })
 
